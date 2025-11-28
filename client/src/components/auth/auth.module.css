@@ -1,0 +1,101 @@
+.authFormContainer {
+  background-color: var(--clr-accent-1);
+  padding-block: clamp(2.9rem, 3.8vw, 3.3rem);
+  padding-inline: clamp(2.4rem, 3.5vw, 3.2rem);
+  border-radius: 1rem;
+  min-width: clamp(32.7rem, 45vw, 40rem);
+  width: fit-content; 
+  margin-block-start: clamp(5.6rem, 9vw, 8rem);
+}
+
+.formTitle {
+  text-align: start;
+  font-weight: 300;
+  font-size: 3.2rem;
+  letter-spacing: -0.5px;
+  margin-block-end: 4rem;
+}
+
+.formFieldsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+
+.fieldContainer,
+.fieldContainerError {
+  display: flex;
+  height: fit-content;
+
+  padding-block-end: 1.6rem;
+}
+
+.fieldContainer {
+  border-bottom: 1px solid var(--clr-inactive);
+}
+
+.fieldContainer:focus-within {
+  border-bottom: 1px solid var(--clr-white);
+}
+
+.fieldContainerError {
+  border-bottom: 1px solid var(--clr-red-500);
+}
+
+.formField {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  padding-inline-start: 1.6rem;
+
+  font-weight: 300;
+  font-size: 1.6rem;
+  letter-spacing: 0.05rem;
+  caret-color: var(--clr-red-500);
+}
+
+.formField::placeholder {
+  font-weight: 300;
+  font-size: 1.6rem;
+  opacity: 0.5;
+  color: var(--clr-white);
+  font-family: "Outfit", sans-serif;
+}
+
+.formField:focus {
+  outline: none;
+}
+
+.submitBtn {
+  font-weight: 300;
+  font-size: 1.6rem;
+  background-color: var(--clr-red-500);
+  margin-block-start: 3.2rem;
+  margin-block-end: 2.4rem;
+  border: none;
+  width: 100%;
+  padding-block: 1.45rem;
+  border-radius: 0.6rem;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.submitBtn:hover {
+  color: var(--clr-page-bg);
+  background-color: var(--clr-white);
+}
+.submitBtn:active {
+  color: var(--clr-page-bg);
+  background-color: var(--clr-white);
+}
+
+.supportMessage {
+  font-weight: 300;
+  font-size: 1.6rem;
+}
+
+.formRedirect {
+  color: var(--clr-red-500);
+  font-weight: 300;
+  font-size: 1.6rem;
+  text-decoration: none;
+}
