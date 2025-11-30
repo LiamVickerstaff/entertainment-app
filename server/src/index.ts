@@ -2,6 +2,8 @@ import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import authenticationRouter from "./routes/authenticationRouter";
 import { createClient } from "redis";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -22,6 +24,21 @@ await redisClient.connect();
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? process.env.CORS_ORIGIN // production url
+        : [
+            "http://localhost:5173", // Local development frontend running on your laptop
+            "http://192.168.0.6:5173", // local wifi network url from devices (Phone / Ipad)
+            "http://172.20.10.9:5173", //  iPhone Personal Hotspot url
+          ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Routers
 app.use("/auth", authenticationRouter);

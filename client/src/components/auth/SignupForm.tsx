@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "./auth.module.css";
 import { validateEmail, validateForm } from "../../utils/authUtils";
+import { attemptSignUp } from "../../api/authFetches";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupForm() {
   const [formValues, setFormValues] = useState({
@@ -12,7 +14,11 @@ export default function SignupForm() {
     email: "",
     password: "",
     repeatPassword: "",
+    authError: "",
   });
+
+  const navigate = useNavigate();
+
   const [hasSubmit, setHasSubmit] = useState<boolean>(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -40,18 +46,29 @@ export default function SignupForm() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    console.log(formErrors);
     setHasSubmit(true);
 
     const errors = validateForm(formValues);
-    setFormErrors(errors);
+    setFormErrors((prev) => ({ ...prev, ...errors }));
 
     const hasErrors = Object.values(errors).some(Boolean);
     if (hasErrors) return;
 
-    console.log("submitting");
+    try {
+      await attemptSignUp(formValues.email, formValues.password);
+      console.log("User successfully logged in");
+      navigate("/");
+    } catch (error) {
+      console.error("SignUp Failed: ", error);
+      setFormErrors((prev) => ({
+        ...prev,
+        authError: "An error occured, please try again",
+      }));
+    }
   }
 
   return (
@@ -71,6 +88,7 @@ export default function SignupForm() {
               name="email"
               type="email"
               onChange={(e) => handleChange(e)}
+              value={formValues.email}
               placeholder="Email Address"
             />
             {formErrors.email && hasSubmit && <span>{formErrors.email}</span>}
@@ -87,6 +105,7 @@ export default function SignupForm() {
               name="password"
               type="password"
               onChange={(e) => handleChange(e)}
+              value={formValues.password}
               placeholder="Password"
             />
             {formErrors.password && hasSubmit && (
@@ -105,6 +124,7 @@ export default function SignupForm() {
               name="repeatPassword"
               type="password"
               onChange={(e) => handleChange(e)}
+              value={formValues.repeatPassword}
               placeholder="Repeat Password"
             />
             {formErrors.repeatPassword && hasSubmit && (

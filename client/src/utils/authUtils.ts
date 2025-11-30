@@ -22,6 +22,7 @@ export function validateForm(values: {
 // Checks for valid email
 export function validateEmail(email: string) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  console.log("validating email", re.test(email));
   return re.test(email);
 }
+
+

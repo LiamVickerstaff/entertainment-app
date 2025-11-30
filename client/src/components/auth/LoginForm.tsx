@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { validateEmail, validateForm } from "../../utils/authUtils";
 import styles from "./auth.module.css";
+import { attemptLogin } from "../../api/authFetches";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
   const [formValues, setFormValues] = useState({
@@ -12,7 +14,11 @@ export default function LoginForm() {
     email: "",
     password: "",
     repeatPassword: "",
+    authError: "",
   });
+
+  const navigate = useNavigate();
+
   const [hasSubmit, setHasSubmit] = useState<boolean>(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -40,18 +46,32 @@ export default function LoginForm() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setHasSubmit(true);
 
-    const errors = validateForm(formValues);
-    setFormErrors(errors);
+    const errors = validateForm({
+      ...formValues,
+      repeatPassword: formValues.password,
+    });
+    setFormErrors((prev) => ({ ...prev, errors }));
+    console.log(errors);
 
     const hasErrors = Object.values(errors).some(Boolean);
     if (hasErrors) return;
 
-    console.log("submitting");
+    try {
+      await attemptLogin(formValues.email, formValues.password);
+      console.log("User successfully logged in");
+      navigate("/");
+    } catch (error) {
+      console.error("Login Failed: ", error);
+      setFormErrors((prev) => ({
+        ...prev,
+        authError: "Incorrect email or password",
+      }));
+    }
   }
 
   return (
@@ -71,6 +91,7 @@ export default function LoginForm() {
               name="email"
               type="email"
               onChange={(e) => handleChange(e)}
+              value={formValues.email}
               placeholder="Email Address"
             />
             {formErrors.email && hasSubmit && <span>{formErrors.email}</span>}
@@ -87,6 +108,7 @@ export default function LoginForm() {
               name="password"
               type="password"
               onChange={(e) => handleChange(e)}
+              value={formValues.password}
               placeholder="Password"
             />
             {formErrors.password && hasSubmit && (

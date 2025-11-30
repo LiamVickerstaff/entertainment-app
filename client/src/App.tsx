@@ -8,7 +8,7 @@ function App() {
     <>
       <img
         className="loginLogo"
-        src="../public/entertainment-web-app-favicon.svg"
+        src="/entertainment-web-app-favicon.svg"
         alt="entertainment app"
       />
       <Routes>

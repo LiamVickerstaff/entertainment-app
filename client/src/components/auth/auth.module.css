@@ -4,7 +4,7 @@
   padding-inline: clamp(2.4rem, 3.5vw, 3.2rem);
   border-radius: 1rem;
   min-width: clamp(32.7rem, 45vw, 40rem);
-  width: fit-content; 
+  width: fit-content;
   margin-block-start: clamp(5.6rem, 9vw, 8rem);
 }
 
