@@ -2,18 +2,26 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import LoginForm from "./components/auth/LoginForm";
 import SignupForm from "./components/auth/SignupForm";
+import MainLayout from "./pages/MainLayout/MainLayout";
+import Home from "./pages/Home/Home";
+import Movies from "./pages/Movies/Movies";
+import TvShows from "./pages/TvShows/TvShows";
+import Bookmarks from "./pages/Bookmarks/Bookmarks";
 
 function App() {
   return (
     <>
-      <img
-        className="loginLogo"
-        src="/entertainment-web-app-favicon.svg"
-        alt="entertainment app"
-      />
+     
       <Routes>
-        <Route path="login" element={<LoginForm />} />
-        <Route path="signup" element={<SignupForm />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} />
+
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/tv" element={<TvShows />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
+        </Route>
       </Routes>
     </>
   );
