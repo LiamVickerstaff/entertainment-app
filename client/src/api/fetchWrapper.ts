@@ -8,8 +8,14 @@ export async function apiFetchWrapper<T>(
     const res = await fetch(url, options);
 
     if (!res.ok) {
-      const errorMessage = await res.text();
-      throw new Error(`API fetch error: ${res.status} - ${errorMessage}`);
+      let errorMessage = "Failed Request";
+      try {
+        const data = await res.json();
+        if (data?.error) errorMessage = data.error;
+      } catch (error) {
+        console.log(error);
+      }
+      throw new Error(errorMessage);
     }
     return res.json();
   } catch (error) {

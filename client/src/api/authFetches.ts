@@ -19,3 +19,10 @@ export const attemptSignUp = (email: string, password: string) => {
     },
   });
 };
+
+export const attemptLogout = () => {
+  return apiFetchWrapper("/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+};
