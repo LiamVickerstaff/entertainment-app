@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  gap: 1.6rem;
+  align-items: center;
+  margin-inline: 1.8rem;
+}
+
+img {
+  width: clamp(1.8rem, 3.2vw, 2.4rem);
+  height: clamp(1.8rem, 3.2vw, 2.4rem);
+}
+
+input {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-weight: 300;
+
+  background-color: transparent;
+  border: 1px solid transparent;
+
+  padding-block-end: 0.9rem;
+  margin-block-start: 0.9rem;
+  width: 100%;
+}
+
+input::placeholder {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-weight: 300;
+}
+
+input:focus {
+  outline: none;
+  border-bottom: 1px solid var(--clr-inactive);
+}
+
+@media (min-width: 768px) {
+  .container {
+    margin-inline: 2.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    margin-inline: 0 3.6rem;
+  }
+}

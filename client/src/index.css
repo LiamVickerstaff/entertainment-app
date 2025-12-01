@@ -27,9 +27,9 @@
   padding: 0;
 }
 
-* {
+/* * {
   outline: 1px solid red;
-}
+} */
 
 html {
   font-size: 62.5%;
@@ -38,7 +38,6 @@ html {
 body {
   width: 100vw;
   height: 100vh;
-  /* overflow: hidden; */
 
   font-family: "Quicksand", sans-serif;
   font-optical-sizing: auto;
@@ -48,12 +47,16 @@ body {
   background-color: var(--clr-page-bg);
   color: var(--clr-white);
 }
-/* 
-@media (min-width: 768px) {
-  body {
-    border-top: 1px solid var(--clr-page-bg); /* prevents top of the page collapsing */
-/* } */
-/* } */
+
+input,
+textarea,
+select,
+button {
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  letter-spacing: 0px;
+}
 
 img {
   display: block;

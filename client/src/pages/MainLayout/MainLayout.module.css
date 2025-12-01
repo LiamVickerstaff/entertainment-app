@@ -6,6 +6,7 @@
 
 main {
   margin-block-start: clamp(2.4rem, 4vw, 3.2rem);
+  width: 100%;
 }
 
 @media (min-width: 1440px) {
@@ -16,7 +17,5 @@ main {
 
   main {
     margin-block-start: 6.4rem;
-    max-width: 100%;
   }
 }
-
