@@ -5,3 +5,6 @@
   text-align: center;
 }
 
+.loginLogo {
+  margin-block-start: clamp(4.8rem, 8.5vw, 7.8rem);
+}
