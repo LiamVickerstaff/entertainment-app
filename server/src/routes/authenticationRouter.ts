@@ -18,7 +18,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!userAccount)
       return res
         .status(404)
-        .json({ error: `Couldn't find user of email: ${email}` });
+        .json({ error: "No account found, please create one" });
 
     const passwordsMatch = await bcrypt.compare(
       password,
@@ -26,7 +26,7 @@ router.post("/login", async (req: Request, res: Response) => {
     );
 
     if (!passwordsMatch)
-      return res.status(401).json({ error: "Passwords do not match" });
+      return res.status(401).json({ error: "Incorrect credentials" });
 
     sendAuthCookie(res, { userId: userAccount.id, email: userAccount.email });
 
@@ -36,7 +36,7 @@ router.post("/login", async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error with user login: ", error);
-    return res.status(500).json({ error: `Error with user login: ${error}` });
+    return res.status(500).json({ error: "Failed to login" });
   }
 });
 
@@ -49,7 +49,9 @@ router.post("/signup", async (req: Request, res: Response) => {
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser)
-      return res.status(409).json({ error: "User already exists" });
+      return res
+        .status(409)
+        .json({ error: "User already exists, please use login" });
 
     const hashedPassword = await hashPassword(password);
 
@@ -67,8 +69,19 @@ router.post("/signup", async (req: Request, res: Response) => {
       .json({ message: "User created successfully", userId: newUser.id });
   } catch (error) {
     console.error("Signup error: ", error);
-    res.status(500).json({ error: "Signup was unsuccessful" });
+    res.status(500).json({ error: "Failed to sign up" });
   }
+});
+
+router.post("/logout", (req: Request, res: Response) => {
+  res.cookie("auth_token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    expires: new Date(0), // cookie will expire immediately, hence closing session
+  });
+
+  res.status(200).json({ message: "You have been logged out" });
 });
 
 export default router;

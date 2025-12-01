@@ -60,13 +60,19 @@ export default function SignupForm() {
 
     try {
       await attemptSignUp(formValues.email, formValues.password);
-      console.log("User successfully logged in");
+      console.log("New user successfully created");
       navigate("/");
-    } catch (error) {
-      console.error("SignUp Failed: ", error);
+    } catch (error: unknown) {
+      let errorMessage = "Signup failed";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      console.error("SignUp failed: ", error);
       setFormErrors((prev) => ({
         ...prev,
-        authError: "An error occured, please try again",
+        authError: errorMessage,
       }));
     }
   }
@@ -91,7 +97,9 @@ export default function SignupForm() {
               value={formValues.email}
               placeholder="Email Address"
             />
-            {formErrors.email && hasSubmit && <span>{formErrors.email}</span>}
+            {formErrors.email && hasSubmit && (
+              <span className={styles.errorMessage}>{formErrors.email}</span>
+            )}
           </div>
           <div
             className={`${
@@ -109,7 +117,7 @@ export default function SignupForm() {
               placeholder="Password"
             />
             {formErrors.password && hasSubmit && (
-              <span>{formErrors.password}</span>
+              <span className={styles.errorMessage}>{formErrors.password}</span>
             )}
           </div>
           <div
@@ -128,9 +136,14 @@ export default function SignupForm() {
               placeholder="Repeat Password"
             />
             {formErrors.repeatPassword && hasSubmit && (
-              <span>{formErrors.repeatPassword}</span>
+              <span className={styles.errorMessage}>
+                {formErrors.repeatPassword}
+              </span>
             )}
           </div>
+          {formErrors.authError && (
+            <span className={styles.errorMessage}>{formErrors.authError}</span>
+          )}
         </div>
         <button type="submit" className={styles.submitBtn}>
           Create an account

@@ -66,6 +66,13 @@
   outline: none;
 }
 
+.errorMessage {
+  font-weight: 300;
+  font-size: 1.3rem;
+  min-width: fit-content;
+  color: var(--clr-red-500);
+}
+
 .submitBtn {
   font-weight: 300;
   font-size: 1.6rem;

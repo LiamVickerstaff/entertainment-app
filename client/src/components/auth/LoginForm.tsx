@@ -65,11 +65,17 @@ export default function LoginForm() {
       await attemptLogin(formValues.email, formValues.password);
       console.log("User successfully logged in");
       navigate("/");
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage = "Login failed";
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
       console.error("Login Failed: ", error);
       setFormErrors((prev) => ({
         ...prev,
-        authError: "Incorrect email or password",
+        authError: errorMessage,
       }));
     }
   }
@@ -94,7 +100,9 @@ export default function LoginForm() {
               value={formValues.email}
               placeholder="Email Address"
             />
-            {formErrors.email && hasSubmit && <span>{formErrors.email}</span>}
+            {formErrors.email && hasSubmit && (
+              <span className={styles.errorMessage}>{formErrors.email}</span>
+            )}
           </div>
           <div
             className={`${
@@ -112,9 +120,12 @@ export default function LoginForm() {
               placeholder="Password"
             />
             {formErrors.password && hasSubmit && (
-              <span>{formErrors.password}</span>
+              <span className={styles.errorMessage}>{formErrors.password}</span>
             )}
           </div>
+          {formErrors.authError && (
+            <span className={styles.errorMessage}>{formErrors.authError}</span>
+          )}
         </div>
         <button type="submit" className={styles.submitBtn}>
           Login to your account
