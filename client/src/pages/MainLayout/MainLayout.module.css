@@ -7,6 +7,13 @@
 main {
   margin-block-start: clamp(2.4rem, 4vw, 3.2rem);
   width: 100%;
+  margin-inline-start: 1.6rem;
+}
+
+@media (min-width: 768px) {
+  main {
+    margin-inline: 2.5rem;
+  }
 }
 
 @media (min-width: 1440px) {
@@ -17,5 +24,6 @@ main {
 
   main {
     margin-block-start: 6.4rem;
+    margin-inline: 0 3.6rem;
   }
 }

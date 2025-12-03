@@ -1,0 +1,14 @@
+.homeContainer {
+  margin-block-start: 2.4rem;
+}
+
+h2 {
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-weight: 300;
+}
+
+.carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.6rem;
+}
