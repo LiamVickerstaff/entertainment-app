@@ -6,6 +6,10 @@
   max-width: 100%;
   padding-block: 1.8rem;
   padding-inline: 1.6rem;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .appIcon {
@@ -26,12 +30,17 @@
   width: clamp(1.6rem, 2.6vw, 2rem);
   height: clamp(1.6rem, 2.6vw, 2rem);
 
-  opacity: 1;
-  transition: opacity 0.2s ease;
+  fill: var(--clr-inactive);
+
+  transition: fill 0.2s ease;
 }
 
-.inactiveLink {
-  opacity: 0.4;
+.icon:not(.activeLink):hover {
+  fill: var(--clr-red-500);
+}
+
+.activeLink {
+  fill: var(--clr-white);
 }
 
 .avatar {
