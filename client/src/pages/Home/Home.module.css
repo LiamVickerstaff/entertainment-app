@@ -16,13 +16,16 @@ h2 {
 }
 
 .carousel {
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
   gap: 1.6rem;
-  margin-block-end: 4rem;
+
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
   scroll-behavior: smooth;
   scrollbar-width: none;
+  margin-block-end: 4rem;
 }
 
 .carousel::-webkit-scrollbar {
