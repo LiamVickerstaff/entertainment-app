@@ -54,7 +54,6 @@
 @media (min-width: 768px) {
   .navbar {
     margin-inline: 2.5rem;
-    margin-block-start: 2.3rem;
     border-radius: 1rem;
   }
 }

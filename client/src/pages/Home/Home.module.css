@@ -2,6 +2,14 @@
   margin-block-start: 2.4rem;
 }
 
+.trendingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.6rem, 3vw, 2.4rem);
+  border: 1px solid green;
+  padding-inline-start: clamp(1.6rem, 3.3vw, 2.5rem);
+}
+
 h2 {
   font-size: clamp(2rem, 4.2vw, 3.2rem);
   font-weight: 300;
@@ -11,4 +19,61 @@ h2 {
   display: flex;
   flex-wrap: nowrap;
   gap: 1.6rem;
+  margin-block-end: 4rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.recommendedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.4rem, 2vw, 3.2rem);
+  border: 1px solid red;
+  padding-inline: clamp(1.6rem, 3.3vw, 2.5rem);
+}
+
+.recommendedGrid {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 450px) {
+  .recommendedGrid {
+    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .recommendedGrid {
+    gap: 2.5rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .recommendedGrid {
+    grid-template-columns: repeat(4, minmax(16.4rem, 1fr));
+  }
+}
+
+@media (min-width: 1440px) {
+  .trendingContainer {
+    padding-inline-start: 0;
+  }
+
+  .recommendedContainer {
+    padding-inline-start: 0;
+    padding-inline-end: 3.6rem;
+  }
+
+  .recommendedGrid {
+    grid-template-columns: repeat(4, minmax(16.4rem, 1fr));
+  }
 }

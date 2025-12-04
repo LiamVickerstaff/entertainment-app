@@ -1,3 +1,4 @@
+import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 import TrendingContentCard from "../../components/ContentDisplayCards/TrendingContentCard/TrendingContentCard";
 import styles from "./Home.module.css";
 
@@ -11,11 +12,26 @@ export default function Home() {
           <TrendingContentCard />
           <TrendingContentCard />
           <TrendingContentCard />
+          <TrendingContentCard />
+          <TrendingContentCard />
+          <TrendingContentCard />
+          <TrendingContentCard />
         </div>
       </div>
       <div className={styles.recommendedContainer}>
         <h2>Recommended for you</h2>
-        <p>content grid</p>
+        <div className={styles.recommendedGrid}>
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+          <RegularContentCard />
+        </div>
       </div>
     </div>
   );
