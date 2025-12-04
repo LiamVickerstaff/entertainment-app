@@ -17,8 +17,7 @@ input {
   background-color: transparent;
   border: 1px solid transparent;
 
-  padding-block-end: 0.9rem;
-  padding-block-start: 0.9rem;
+  padding-block: 0.9rem;
   width: 100%;
 }
 

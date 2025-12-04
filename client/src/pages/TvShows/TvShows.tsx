@@ -1,5 +1,22 @@
 import styles from "./TvShows.module.css";
+import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 
-export default function TvShows() {
-  return <div>TvShows</div>;
+export default function TvShows({ title }: { title: string }) {
+  return (
+    <div className={styles.container}>
+      <h2>{title}</h2>
+      <div className={styles.grid}>
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+        <RegularContentCard />
+      </div>
+    </div>
+  );
 }
