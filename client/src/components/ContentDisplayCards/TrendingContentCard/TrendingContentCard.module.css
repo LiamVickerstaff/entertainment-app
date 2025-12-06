@@ -133,6 +133,18 @@
   opacity: 0.8;
 }
 
+.contentType {
+  display: flex;
+  align-items: baseline;
+}
+
+.contentMetadataGroup svg {
+  margin-inline-end: 0.8rem;
+  width: 1rem;
+  height: 1rem;
+  fill: hsla(0, 0%, 100%, 0.8);
+}
+
 .contentTitle {
   font-size: 1.5rem;
   font-weight: 500;
@@ -158,6 +170,11 @@
 
   .contentMetadataGroup {
     font-size: 1.5rem;
+  }
+
+  .contentMetadataGroup svg {
+    width: 1.2rem;
+    height: 1.2rem;
   }
 
   .contentTitle {
