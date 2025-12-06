@@ -1,0 +1,79 @@
+.userModal {
+  background-color: var(--clr-accent-1);
+  padding-block: clamp(2.9rem, 3.8vw, 3.3rem);
+  padding-inline: clamp(8rem, 12vw, 10rem);
+  height: fit-content;
+  width: fit-content;
+  margin-block-start: clamp(5.6rem, 9vw, 8rem);
+
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 2px 2px 15px 2px hsl(222, 23%, 22%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 2.2vw, 1.8rem);
+
+  margin: auto;
+}
+
+.userModal::backdrop {
+  background-color: hsla(223, 30%, 9%, 0.6);
+}
+
+.modalCloseBtn {
+  width: 3rem;
+  height: 3rem;
+  padding: 0.2rem;
+
+  background-color: transparent;
+  fill: var(--clr-white);
+
+  border: 1px solid var(--clr-white);
+  border-radius: 50%;
+
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+}
+
+.modalCloseBtn:hover {
+  fill: hsl(0, 0%, 75%);
+  border-color: hsl(0, 0%, 75%);
+}
+.modalCloseBtn:active {
+  fill: hsl(0, 0%, 32%);
+  border-color: hsl(0, 0%, 32%);
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalAvatar {
+  width: clamp(5rem, 10vw, 8rem);
+  height: clamp(5rem, 10vw, 8rem);
+
+  border: 1px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.modalUsername {
+  font-size: clamp(1.8rem, 3.3vw, 2.6rem);
+}
+
+.logoutBtn {
+  padding-block: 0.4rem;
+  padding-inline: 0.6rem;
+
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+
+  background-color: var(--clr-red-500);
+
+  border: 1px solid var(--clr-white);
+  border-radius: 0.6rem;
+}

@@ -1,0 +1,13 @@
+@media (min-width: 768px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    gap: 1.6rem;
+  }
+}

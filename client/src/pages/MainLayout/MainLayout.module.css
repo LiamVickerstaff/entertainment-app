@@ -1,0 +1,33 @@
+.container {
+  width: 100%;
+  border: 1px solid yellow;
+  height: fit-content;
+}
+
+main {
+  margin-block-start: clamp(2.4rem, 4vw, 3.2rem);
+  padding-block-end:  clamp(1.5rem, 4vw, 3.2rem);;
+
+  border: 1px solid purple;
+  width: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-block-start: 2.3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    display: flex;
+    height: 100vh;
+    padding-block-start: 0;
+  }
+
+  main {
+    margin-block-start: 6.4rem;
+  }
+}
