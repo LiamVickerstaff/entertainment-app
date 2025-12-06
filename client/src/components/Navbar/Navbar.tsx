@@ -1,10 +1,34 @@
 import { Link, useLocation } from "react-router-dom";
 import styles from "./Navbar.module.css";
+import { useEffect, useRef, useState } from "react";
+import UserModal from "../UserModal/UserModal";
 
 export default function Navbar() {
   const location = useLocation();
 
   const currentPath = location.pathname.slice(1);
+
+  const [userModalIsOpen, setUserModalIsOpen] = useState<boolean>(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  function handleOpenModal() {
+    setUserModalIsOpen(true);
+  }
+  function handleCloseModal() {
+    setUserModalIsOpen(false);
+  }
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    if (!dialog) return;
+
+    if (userModalIsOpen) {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      if (dialog.open) dialog.close();
+    }
+  }, [userModalIsOpen]);
 
   return (
     <nav className={styles.navbar}>
@@ -79,9 +103,12 @@ export default function Navbar() {
           </Link>
         </li>
       </ul>
-      <button className={styles.avatar}>
+      <button className={styles.avatar} onClick={handleOpenModal}>
         <img src="/entertainment-web-app-favicon.svg" alt="avatar" />
       </button>
+      {userModalIsOpen && (
+        <UserModal dialogRef={dialogRef} handleCloseModal={handleCloseModal} />
+      )}
     </nav>
   );
 }
