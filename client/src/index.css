@@ -48,7 +48,6 @@ body {
 
   background-color: var(--clr-page-bg);
   color: var(--clr-white);
-  border: 1px solid white;
 }
 
 input,
