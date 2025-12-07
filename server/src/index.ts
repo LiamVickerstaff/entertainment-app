@@ -1,9 +1,11 @@
 import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
-import authenticationRouter from "./routes/authenticationRouter";
 import { createClient } from "redis";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+// ROUTERS
+import authenticationRouter from "./routes/authenticationRouter";
+import tmdbRouter from "./routes/tmdbRouter";
 
 dotenv.config();
 
@@ -11,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Redis Client
-const redisClient = createClient({
+export const redisClient = createClient({
   username: process.env.redisUsername || "",
   password: process.env.redisPassword || "",
   socket: {
@@ -35,6 +37,7 @@ app.use(
             "http://192.168.0.6:5173", // local wifi network url from devices (Phone / Ipad)
             "http://172.20.10.9:5173", //  iPhone Personal Hotspot url
           ],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -42,6 +45,7 @@ app.use(
 
 // Routers
 app.use("/auth", authenticationRouter);
+app.use("/tmdb", tmdbRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
