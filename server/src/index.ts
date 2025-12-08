@@ -4,7 +4,7 @@ import { createClient } from "redis";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 // ROUTERS
-import authenticationRouter from "./routes/authenticationRouter";
+import authenticationRouter from "./routes/authRouter";
 import tmdbRouter from "./routes/tmdbRouter";
 
 dotenv.config();

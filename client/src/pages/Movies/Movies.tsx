@@ -28,9 +28,9 @@ export default function Movies({ title }: { title: string }) {
     loadMovies();
   }, []);
 
-  useEffect(() => {
-    console.log(movieData);
-  }, [movieData]);
+  // useEffect(() => {
+  //   console.log(movieData);
+  // }, [movieData]);
 
   if (loading)
     return (

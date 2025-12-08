@@ -28,9 +28,9 @@ export default function TvShows({ title }: { title: string }) {
     loadMovies();
   }, []);
 
-  useEffect(() => {
-    console.log(tvShowData);
-  }, [tvShowData]);
+  // useEffect(() => {
+  //   console.log(tvShowData);
+  // }, [tvShowData]);
 
   if (loading)
     return (

@@ -1,8 +1,7 @@
 import express, { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
-import { hashPassword } from "../utils/authUtils";
+import { attachAuthCookie, hashPassword } from "../utils/authUtils";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -28,11 +27,14 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!passwordsMatch)
       return res.status(401).json({ error: "Incorrect credentials" });
 
-    sendAuthCookie(res, { userId: userAccount.id, email: userAccount.email });
+    attachAuthCookie(res, { userId: userAccount.id });
 
     return res.status(200).json({
       message: "Successful login",
-      user: { id: userAccount.id, email: userAccount.email },
+      user: {
+        username: userAccount.username,
+        email: userAccount.email,
+      },
     });
   } catch (error) {
     console.error("Error with user login: ", error);
@@ -54,19 +56,25 @@ router.post("/signup", async (req: Request, res: Response) => {
         .json({ error: "User already exists, please use login" });
 
     const hashedPassword = await hashPassword(password);
+    const newUsername = email.split("@")[0];
 
     const newUser = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
+        username: newUsername,
       },
     });
 
-    sendAuthCookie(res, { userId: newUser.id, email: newUser.email });
+    attachAuthCookie(res, { userId: newUser.id });
 
-    res
-      .status(201)
-      .json({ message: "User created successfully", userId: newUser.id });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        username: newUser.username,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
     console.error("Signup error: ", error);
     res.status(500).json({ error: "Failed to sign up" });
@@ -85,25 +93,3 @@ router.post("/logout", (req: Request, res: Response) => {
 });
 
 export default router;
-
-function sendAuthCookie(
-  res: Response,
-  payload: { userId: string; email: string }
-) {
-  const token = jwt.sign(
-    { userId: payload.userId, email: payload.email },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: "7d",
-    }
-  );
-
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-
-    // must be true in production (over HTTPS) and false in development (over HTTP)
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "strict",
-  });
-}
