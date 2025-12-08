@@ -1,23 +1,48 @@
-import { useState } from "react";
 import styles from "./RegularContentCard.module.css";
 import type { ContentCardProps } from "../TrendingContentCard/TrendingContentCard";
-import { addBookmarkFetch } from "../../../api/bookmarkFetches";
+import {
+  addBookmarkFetch,
+  removeBookmarkFetch,
+} from "../../../api/bookmarkFetches";
+import { useUserStore } from "../../../stores/useUserStore";
+import { useNavigate } from "react-router-dom";
+import { handleNotAuthorized } from "../../../utils/authUtils";
 
 export default function RegularContentCard({
   title,
   imgUrl,
   year,
-  contentType,
+  mediaType,
   advisoryRating,
   mediaId,
 }: ContentCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { bookmarkIds, addBookmarkIdToStore, removeBookmarkIdFromStore } =
+    useUserStore();
+  const navigate = useNavigate();
 
-  async function handleToggleBookmark(mediaId: number) {
-    const response = await addBookmarkFetch(mediaId);
-    console.log(response);
+  const isBookmarked = bookmarkIds.includes(mediaId);
 
-    setIsBookmarked((prev) => !prev);
+  async function handleAddBookmark() {
+    try {
+      const response = (await addBookmarkFetch(
+        mediaId,
+        mediaType
+      )) as BookmarkFetchRes;
+
+      addBookmarkIdToStore(response.bookmarkId);
+    } catch (error) {
+      handleNotAuthorized(error, navigate);
+    }
+  }
+
+  async function handleRemoveBookmark() {
+    try {
+      const response = (await removeBookmarkFetch(mediaId)) as BookmarkFetchRes;
+
+      removeBookmarkIdFromStore(response.bookmarkId);
+    } catch (error) {
+      handleNotAuthorized(error, navigate);
+    }
   }
 
   return (
@@ -38,7 +63,7 @@ export default function RegularContentCard({
           className={`${styles.bookmarkBtn} ${
             isBookmarked ? styles.isBookmarked : ""
           }`}
-          onClick={() => handleToggleBookmark(mediaId)}
+          onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
         >
           <svg
             viewBox="0 0 12 14"
@@ -58,8 +83,8 @@ export default function RegularContentCard({
           <span>{year}</span>
           <span>&bull;</span>
 
-          <span className={styles.contentType}>
-            {contentType === "movie" ? (
+          <span className={styles.mediaType}>
+            {mediaType === "movie" ? (
               // TV SVG
               <svg viewBox="0 0 10 10">
                 <path
@@ -78,7 +103,7 @@ export default function RegularContentCard({
                 />
               </svg>
             )}
-            {contentType === "movie" ? "Movie" : "TV Series"}
+            {mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
           <span>{advisoryRating}</span>
@@ -87,4 +112,9 @@ export default function RegularContentCard({
       </div>
     </div>
   );
+}
+
+export interface BookmarkFetchRes {
+  message: string;
+  bookmarkId: number;
 }

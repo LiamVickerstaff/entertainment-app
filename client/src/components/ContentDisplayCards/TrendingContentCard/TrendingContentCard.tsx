@@ -1,19 +1,49 @@
-import { useState } from "react";
 import styles from "./TrendingContentCard.module.css";
+import { useUserStore } from "../../../stores/useUserStore";
+import {
+  addBookmarkFetch,
+  removeBookmarkFetch,
+} from "../../../api/bookmarkFetches";
+import type { BookmarkFetchRes } from "../RegularContentCard/RegularContentCard";
+import { handleNotAuthorized } from "../../../utils/authUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function TrendingContentCard({
   title,
   imgUrl,
   year,
-  contentType,
+  mediaType,
   advisoryRating,
   mediaId,
 }: ContentCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const { bookmarkIds, addBookmarkIdToStore, removeBookmarkIdFromStore } =
+    useUserStore();
 
-  function handleToggleBookmark(mediaId: number) {
-    console.log(mediaId);
-    setIsBookmarked((prev) => !prev);
+  const navigate = useNavigate();
+
+  const isBookmarked = bookmarkIds.includes(mediaId);
+
+  async function handleAddBookmark() {
+    try {
+      const response = (await addBookmarkFetch(
+        mediaId,
+        mediaType
+      )) as BookmarkFetchRes;
+
+      addBookmarkIdToStore(response.bookmarkId);
+    } catch (error) {
+      handleNotAuthorized(error, navigate);
+    }
+  }
+
+  async function handleRemoveBookmark() {
+    try {
+      const response = (await removeBookmarkFetch(mediaId)) as BookmarkFetchRes;
+
+      removeBookmarkIdFromStore(response.bookmarkId);
+    } catch (error) {
+      handleNotAuthorized(error, navigate);
+    }
   }
 
   return (
@@ -33,7 +63,7 @@ export default function TrendingContentCard({
         className={`${styles.bookmarkBtn} ${
           isBookmarked ? styles.isBookmarked : ""
         }`}
-        onClick={() => handleToggleBookmark(mediaId)}
+        onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
       >
         <svg
           viewBox="0 0 12 14"
@@ -51,8 +81,8 @@ export default function TrendingContentCard({
         <div className={styles.contentMetadataGroup}>
           <span>{year}</span>
           <span>&bull;</span>
-          <span className={styles.contentType}>
-            {contentType === "movie" ? (
+          <span className={styles.mediaType}>
+            {mediaType === "movie" ? (
               // TV SVG
               <svg viewBox="0 0 10 10">
                 <path
@@ -71,7 +101,7 @@ export default function TrendingContentCard({
                 />
               </svg>
             )}
-            {contentType === "movie" ? "Movie" : "TV Series"}
+            {mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
           <span>{advisoryRating}</span>
@@ -84,7 +114,7 @@ export default function TrendingContentCard({
 
 export interface ContentCardProps {
   title: string;
-  contentType: "movie" | "TV Series";
+  mediaType: "movie" | "tv";
   imgUrl: string;
   year: string;
   advisoryRating: string;

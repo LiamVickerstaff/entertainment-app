@@ -20,14 +20,24 @@ export type BookmarkModel = runtime.Types.Result.DefaultSelection<Prisma.$Bookma
 
 export type AggregateBookmark = {
   _count: BookmarkCountAggregateOutputType | null
+  _avg: BookmarkAvgAggregateOutputType | null
+  _sum: BookmarkSumAggregateOutputType | null
   _min: BookmarkMinAggregateOutputType | null
   _max: BookmarkMaxAggregateOutputType | null
+}
+
+export type BookmarkAvgAggregateOutputType = {
+  externalId: number | null
+}
+
+export type BookmarkSumAggregateOutputType = {
+  externalId: number | null
 }
 
 export type BookmarkMinAggregateOutputType = {
   id: string | null
   userId: string | null
-  externalId: string | null
+  externalId: number | null
   mediaType: $Enums.MediaType | null
   createdAt: Date | null
 }
@@ -35,7 +45,7 @@ export type BookmarkMinAggregateOutputType = {
 export type BookmarkMaxAggregateOutputType = {
   id: string | null
   userId: string | null
-  externalId: string | null
+  externalId: number | null
   mediaType: $Enums.MediaType | null
   createdAt: Date | null
 }
@@ -49,6 +59,14 @@ export type BookmarkCountAggregateOutputType = {
   _all: number
 }
 
+
+export type BookmarkAvgAggregateInputType = {
+  externalId?: true
+}
+
+export type BookmarkSumAggregateInputType = {
+  externalId?: true
+}
 
 export type BookmarkMinAggregateInputType = {
   id?: true
@@ -113,6 +131,18 @@ export type BookmarkAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BookmarkAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BookmarkSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BookmarkMinAggregateInputType
@@ -143,6 +173,8 @@ export type BookmarkGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: BookmarkCountAggregateInputType | true
+  _avg?: BookmarkAvgAggregateInputType
+  _sum?: BookmarkSumAggregateInputType
   _min?: BookmarkMinAggregateInputType
   _max?: BookmarkMaxAggregateInputType
 }
@@ -150,10 +182,12 @@ export type BookmarkGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type BookmarkGroupByOutputType = {
   id: string
   userId: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt: Date
   _count: BookmarkCountAggregateOutputType | null
+  _avg: BookmarkAvgAggregateOutputType | null
+  _sum: BookmarkSumAggregateOutputType | null
   _min: BookmarkMinAggregateOutputType | null
   _max: BookmarkMaxAggregateOutputType | null
 }
@@ -179,7 +213,7 @@ export type BookmarkWhereInput = {
   NOT?: Prisma.BookmarkWhereInput | Prisma.BookmarkWhereInput[]
   id?: Prisma.StringFilter<"Bookmark"> | string
   userId?: Prisma.StringFilter<"Bookmark"> | string
-  externalId?: Prisma.StringFilter<"Bookmark"> | string
+  externalId?: Prisma.IntFilter<"Bookmark"> | number
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -201,7 +235,7 @@ export type BookmarkWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BookmarkWhereInput[]
   NOT?: Prisma.BookmarkWhereInput | Prisma.BookmarkWhereInput[]
   userId?: Prisma.StringFilter<"Bookmark"> | string
-  externalId?: Prisma.StringFilter<"Bookmark"> | string
+  externalId?: Prisma.IntFilter<"Bookmark"> | number
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -214,8 +248,10 @@ export type BookmarkOrderByWithAggregationInput = {
   mediaType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BookmarkCountOrderByAggregateInput
+  _avg?: Prisma.BookmarkAvgOrderByAggregateInput
   _max?: Prisma.BookmarkMaxOrderByAggregateInput
   _min?: Prisma.BookmarkMinOrderByAggregateInput
+  _sum?: Prisma.BookmarkSumOrderByAggregateInput
 }
 
 export type BookmarkScalarWhereWithAggregatesInput = {
@@ -224,14 +260,14 @@ export type BookmarkScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BookmarkScalarWhereWithAggregatesInput | Prisma.BookmarkScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
-  externalId?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
+  externalId?: Prisma.IntWithAggregatesFilter<"Bookmark"> | number
   mediaType?: Prisma.EnumMediaTypeWithAggregatesFilter<"Bookmark"> | $Enums.MediaType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Bookmark"> | Date | string
 }
 
 export type BookmarkCreateInput = {
   id?: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutBookmarksInput
@@ -240,14 +276,14 @@ export type BookmarkCreateInput = {
 export type BookmarkUncheckedCreateInput = {
   id?: string
   userId: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutBookmarksNestedInput
@@ -256,7 +292,7 @@ export type BookmarkUpdateInput = {
 export type BookmarkUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -264,14 +300,14 @@ export type BookmarkUncheckedUpdateInput = {
 export type BookmarkCreateManyInput = {
   id?: string
   userId: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -279,7 +315,7 @@ export type BookmarkUpdateManyMutationInput = {
 export type BookmarkUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -296,7 +332,7 @@ export type BookmarkOrderByRelationAggregateInput = {
 
 export type BookmarkUserIdExternalIdCompoundUniqueInput = {
   userId: string
-  externalId: string
+  externalId: number
 }
 
 export type BookmarkCountOrderByAggregateInput = {
@@ -305,6 +341,10 @@ export type BookmarkCountOrderByAggregateInput = {
   externalId?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type BookmarkAvgOrderByAggregateInput = {
+  externalId?: Prisma.SortOrder
 }
 
 export type BookmarkMaxOrderByAggregateInput = {
@@ -321,6 +361,10 @@ export type BookmarkMinOrderByAggregateInput = {
   externalId?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type BookmarkSumOrderByAggregateInput = {
+  externalId?: Prisma.SortOrder
 }
 
 export type BookmarkCreateNestedManyWithoutUserInput = {
@@ -365,20 +409,28 @@ export type BookmarkUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.BookmarkScalarWhereInput | Prisma.BookmarkScalarWhereInput[]
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type EnumMediaTypeFieldUpdateOperationsInput = {
   set?: $Enums.MediaType
 }
 
 export type BookmarkCreateWithoutUserInput = {
   id?: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
 }
 
 export type BookmarkUncheckedCreateWithoutUserInput = {
   id?: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
 }
@@ -415,35 +467,35 @@ export type BookmarkScalarWhereInput = {
   NOT?: Prisma.BookmarkScalarWhereInput | Prisma.BookmarkScalarWhereInput[]
   id?: Prisma.StringFilter<"Bookmark"> | string
   userId?: Prisma.StringFilter<"Bookmark"> | string
-  externalId?: Prisma.StringFilter<"Bookmark"> | string
+  externalId?: Prisma.IntFilter<"Bookmark"> | number
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
 }
 
 export type BookmarkCreateManyUserInput = {
   id?: string
-  externalId: string
+  externalId: number
   mediaType: $Enums.MediaType
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookmarkUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookmarkUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.IntFieldUpdateOperationsInput | number
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -504,7 +556,7 @@ export type $BookmarkPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
-    externalId: string
+    externalId: number
     mediaType: $Enums.MediaType
     createdAt: Date
   }, ExtArgs["result"]["bookmark"]>
@@ -933,7 +985,7 @@ export interface Prisma__BookmarkClient<T, Null = never, ExtArgs extends runtime
 export interface BookmarkFieldRefs {
   readonly id: Prisma.FieldRef<"Bookmark", 'String'>
   readonly userId: Prisma.FieldRef<"Bookmark", 'String'>
-  readonly externalId: Prisma.FieldRef<"Bookmark", 'String'>
+  readonly externalId: Prisma.FieldRef<"Bookmark", 'Int'>
   readonly mediaType: Prisma.FieldRef<"Bookmark", 'MediaType'>
   readonly createdAt: Prisma.FieldRef<"Bookmark", 'DateTime'>
 }

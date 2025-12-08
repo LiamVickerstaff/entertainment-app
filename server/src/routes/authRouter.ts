@@ -29,11 +29,27 @@ router.post("/login", async (req: Request, res: Response) => {
 
     attachAuthCookie(res, { userId: userAccount.id });
 
+    let bookmarks = [];
+
+    try {
+      bookmarks = await prisma.bookmark.findMany({
+        where: { userId: userAccount.id },
+      });
+    } catch (error) {
+      console.error("Couldn't get all bookmarks from database:", error);
+      return res.status(500).json({
+        error: "Couldn't access database for getting user's bookmarks",
+      });
+    }
+
+    const bookmarkIds = bookmarks.map((bookmark) => bookmark.externalId);
+
     return res.status(200).json({
       message: "Successful login",
       user: {
         username: userAccount.username,
         email: userAccount.email,
+        bookmarkIds,
       },
     });
   } catch (error) {

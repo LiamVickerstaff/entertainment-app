@@ -91,7 +91,7 @@ export default function Home() {
                     4
                   ) ?? "N/A"
                 }
-                contentType={content.media_type as "movie" | "TV Series"}
+                mediaType={content.media_type as "movie" | "tv"}
                 advisoryRating={content.adult ? "18+" : "PG"}
                 mediaId={content.id}
               />
@@ -113,7 +113,7 @@ export default function Home() {
                     4
                   ) ?? "N/A"
                 }
-                contentType={content.media_type as "movie" | "TV Series"}
+                mediaType={content.media_type as "movie" | "tv"}
                 advisoryRating={content.adult ? "18+" : "PG"}
                 mediaId={content.id}
               />

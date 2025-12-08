@@ -60,7 +60,7 @@ export default function Movies({ title }: { title: string }) {
               title={movie.title}
               imgUrl={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
               year={movie.release_date.slice(0, 4)}
-              contentType={movie.media_type as "movie" | "TV Series"}
+              mediaType={movie.media_type as "movie" | "tv"}
               advisoryRating={movie.adult ? "18+" : "PG"}
               mediaId={movie.id}
             />

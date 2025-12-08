@@ -10,8 +10,8 @@
 */
 
 export const MediaType = {
-  MOVIE: 'MOVIE',
-  TV: 'TV'
+  movie: 'movie',
+  tv: 'tv'
 } as const
 
 export type MediaType = (typeof MediaType)[keyof typeof MediaType]

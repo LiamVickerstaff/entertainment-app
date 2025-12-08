@@ -1,14 +1,108 @@
 import express, { type Request, type Response } from "express";
+import { prisma } from "../lib/prisma";
 
 const router = express.Router();
 
-router.post("/add", (req: Request, res: Response) => {
+router.post("/add", async (req: Request, res: Response) => {
   const userId = req.userId;
-  const { mediaId } = req.body;
+  const { mediaId, mediaType } = req.body;
+
+  if (!mediaId || !mediaType) {
+    return res
+      .status(400)
+      .json({ error: "missing mediaId or mediaType in request body" });
+  }
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ error: "No userId passed to /bookmark/add route" });
+  }
 
   console.log(`user: ${userId} tried add bookmark for content: ${mediaId}`);
 
-  return res.status(200).json({ message: "received request" });
+  let newBookmark;
+
+  try {
+    newBookmark = await prisma.bookmark.create({
+      data: {
+        userId,
+        externalId: mediaId,
+        mediaType: mediaType as "movie" | "tv",
+      },
+    });
+  } catch (error) {
+    console.error("Database error, prisma failed to save new bookmark:", error);
+    return res.status(500).json({ error: "failed to save new bookmark" });
+  }
+
+  return res
+    .status(200)
+    .json({ message: "received request", bookmarkId: newBookmark.externalId });
+});
+
+router.delete("/remove/:mediaId", async (req: Request, res: Response) => {
+  const mediaId = Number(req.params.mediaId); // convert to number since params are always strings
+  const userId = req.userId;
+
+  if (isNaN(mediaId))
+    // check that mediaId exists
+    return res
+      .status(400)
+      .json({ error: "Server did not receive mediaId for deleting bookmark" });
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ error: "No userId passed to /bookmark/remove route" });
+  }
+
+  try {
+    const removedBookmark = await prisma.bookmark.delete({
+      where: {
+        userId_externalId: {
+          userId,
+          externalId: mediaId,
+        },
+      },
+    });
+
+    return res.status(200).json({
+      message: "Successfully deleted bookmark",
+      bookmarkId: removedBookmark.externalId,
+    });
+  } catch (error) {
+    const e = error as any;
+    if (e.code === "P2025") {
+      console.error("Did not find bookmark when trying to delete:", e);
+      return res.status(404).json({ error: "Bookmark not found" });
+    }
+    console.error("failed to remove bookmark: ", e);
+    return res.status(500).json({ error: "failed to remove bookmark" });
+  }
+});
+
+// Get all bookmarks of a user
+router.get("/", async (req: Request, res: Response) => {
+  const userId = req.userId;
+
+  if (!userId)
+    return res
+      .status(400)
+      .json({ error: "No userId found at /bookmark route" });
+
+  let bookmarks;
+
+  try {
+    bookmarks = await prisma.bookmark.findMany({ where: { userId } });
+  } catch (error) {
+    console.error("Couldn't get all bookmarks from database:", error);
+    return res
+      .status(400)
+      .json({ error: "No userId found at /bookmark route" });
+  }
+
+  return res.status(200).json({ bookmarks });
 });
 
 export default router;

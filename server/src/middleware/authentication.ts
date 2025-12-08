@@ -26,13 +26,13 @@ export function authMiddleware(
     ) as AuthTokenPayload;
   } catch (error) {
     console.error("token failed verification:", error);
-    return res.status(401).json({ error: "Not authorized" });
+    return res.status(401).json({ error: "Not authenticated" });
   }
 
   // Attach user id to req payload
-  if (!payload || !payload.userId) {
-    console.error("No payload or userId");
-    return res.status(401).json({ error: "Auth token missing payload" });
+  if (!payload?.userId) {
+    console.error("Invalid token payload");
+    return res.status(401).json({ error: "Not authenticated" });
   }
 
   req.userId = payload.userId;

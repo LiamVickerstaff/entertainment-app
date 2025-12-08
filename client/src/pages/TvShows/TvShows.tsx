@@ -61,7 +61,7 @@ export default function TvShows({ title }: { title: string }) {
               title={tvShow.name}
               imgUrl={`https://image.tmdb.org/t/p/w780${tvShow.poster_path}`}
               year={tvShow.first_air_date.slice(0, 4)}
-              contentType={tvShow.media_type as "movie" | "TV Series"}
+              mediaType={tvShow.media_type as "movie" | "tv"}
               advisoryRating={tvShow.adult ? "18+" : "PG"}
               mediaId={tvShow.id}
             />

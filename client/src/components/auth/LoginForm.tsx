@@ -7,6 +7,7 @@ import { useUserStore } from "../../stores/useUserStore";
 
 export default function LoginForm() {
   const { loginUser } = useUserStore();
+  const navigate = useNavigate();
 
   const [formValues, setFormValues] = useState({
     email: "",
@@ -19,8 +20,6 @@ export default function LoginForm() {
     repeatPassword: "",
     authError: "",
   });
-
-  const navigate = useNavigate();
 
   const [hasSubmit, setHasSubmit] = useState<boolean>(false);
 
@@ -65,10 +64,10 @@ export default function LoginForm() {
     if (hasErrors) return;
 
     try {
-      const response = await attemptLogin(
+      const response = (await attemptLogin(
         formValues.email,
         formValues.password
-      );
+      )) as LoginFetchRes;
       console.log("User successfully logged in", response);
       loginUser(response.user);
       navigate("/");
@@ -146,4 +145,13 @@ export default function LoginForm() {
       </form>
     </div>
   );
+}
+
+export interface LoginFetchRes {
+  message: string;
+  user: {
+    username: string;
+    email: string;
+    bookmarkIds: number[];
+  };
 }
