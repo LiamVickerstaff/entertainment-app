@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./RegularContentCard.module.css";
 import type { ContentCardProps } from "../TrendingContentCard/TrendingContentCard";
+import { addBookmarkFetch } from "../../../api/bookmarkFetches";
 
 export default function RegularContentCard({
   title,
@@ -8,10 +9,14 @@ export default function RegularContentCard({
   year,
   contentType,
   advisoryRating,
+  mediaId,
 }: ContentCardProps) {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
-  function handleToggleBookmark() {
+  async function handleToggleBookmark(mediaId: number) {
+    const response = await addBookmarkFetch(mediaId);
+    console.log(response);
+
     setIsBookmarked((prev) => !prev);
   }
 
@@ -33,7 +38,7 @@ export default function RegularContentCard({
           className={`${styles.bookmarkBtn} ${
             isBookmarked ? styles.isBookmarked : ""
           }`}
-          onClick={handleToggleBookmark}
+          onClick={() => handleToggleBookmark(mediaId)}
         >
           <svg
             viewBox="0 0 12 14"

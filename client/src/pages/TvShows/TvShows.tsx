@@ -63,6 +63,7 @@ export default function TvShows({ title }: { title: string }) {
               year={tvShow.first_air_date.slice(0, 4)}
               contentType={tvShow.media_type as "movie" | "TV Series"}
               advisoryRating={tvShow.adult ? "18+" : "PG"}
+              mediaId={tvShow.id}
             />
           ))}
       </div>

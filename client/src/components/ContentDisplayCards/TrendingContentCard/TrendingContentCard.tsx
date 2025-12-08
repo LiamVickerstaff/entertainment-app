@@ -7,10 +7,12 @@ export default function TrendingContentCard({
   year,
   contentType,
   advisoryRating,
+  mediaId,
 }: ContentCardProps) {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
-  function handleToggleBookmark() {
+  function handleToggleBookmark(mediaId: number) {
+    console.log(mediaId);
     setIsBookmarked((prev) => !prev);
   }
 
@@ -31,7 +33,7 @@ export default function TrendingContentCard({
         className={`${styles.bookmarkBtn} ${
           isBookmarked ? styles.isBookmarked : ""
         }`}
-        onClick={handleToggleBookmark}
+        onClick={() => handleToggleBookmark(mediaId)}
       >
         <svg
           viewBox="0 0 12 14"
@@ -86,4 +88,5 @@ export interface ContentCardProps {
   imgUrl: string;
   year: string;
   advisoryRating: string;
+  mediaId: number;
 }

@@ -19,6 +19,7 @@ export function attachAuthCookie(res: Response, payload: { userId: string }) {
     // must be true in production (over HTTPS) and false in development (over HTTP)
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    path: "/",
   });
 }

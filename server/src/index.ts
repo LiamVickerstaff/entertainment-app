@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 // ROUTERS
 import authenticationRouter from "./routes/authRouter";
 import tmdbRouter from "./routes/tmdbRouter";
+import bookmarkRouter from "./routes/bookmarksRouter";
+import { authMiddleware } from "./middleware/authentication";
 
 dotenv.config();
 
@@ -46,6 +48,7 @@ app.use(
 // Routers
 app.use("/auth", authenticationRouter);
 app.use("/tmdb", tmdbRouter);
+app.use("/bookmark", authMiddleware, bookmarkRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");

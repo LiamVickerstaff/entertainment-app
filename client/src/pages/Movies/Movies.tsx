@@ -62,6 +62,7 @@ export default function Movies({ title }: { title: string }) {
               year={movie.release_date.slice(0, 4)}
               contentType={movie.media_type as "movie" | "TV Series"}
               advisoryRating={movie.adult ? "18+" : "PG"}
+              mediaId={movie.id}
             />
           ))}
       </div>

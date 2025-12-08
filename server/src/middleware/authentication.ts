@@ -8,9 +8,11 @@ export function authMiddleware(
 ) {
   // Get the auth token from cookie
   const token = req.cookies.auth_token;
+  console.log("token:", token);
 
   // Check token is there, therefore authorized or not
   if (!token) {
+    console.error("no token attached to request");
     return res.status(401).json({ error: "Not authenticated" });
   }
 
@@ -23,15 +25,17 @@ export function authMiddleware(
       process.env.JWT_SECRET || ""
     ) as AuthTokenPayload;
   } catch (error) {
+    console.error("token failed verification:", error);
     return res.status(401).json({ error: "Not authorized" });
   }
 
   // Attach user id to req payload
   if (!payload || !payload.userId) {
+    console.error("No payload or userId");
     return res.status(401).json({ error: "Auth token missing payload" });
   }
 
-  req.user = { id: payload.userId };
+  req.userId = payload.userId;
 
   next();
 }
