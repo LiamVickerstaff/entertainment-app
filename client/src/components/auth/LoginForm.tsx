@@ -3,8 +3,11 @@ import { validateEmail, validateForm } from "../../utils/authUtils";
 import styles from "./auth.module.css";
 import { attemptLogin } from "../../api/authFetches";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/useUserStore";
 
 export default function LoginForm() {
+  const { loginUser } = useUserStore();
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -62,8 +65,12 @@ export default function LoginForm() {
     if (hasErrors) return;
 
     try {
-      await attemptLogin(formValues.email, formValues.password);
-      console.log("User successfully logged in");
+      const response = await attemptLogin(
+        formValues.email,
+        formValues.password
+      );
+      console.log("User successfully logged in", response);
+      loginUser(response.user);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Login failed";

@@ -3,8 +3,11 @@ import styles from "./auth.module.css";
 import { validateEmail, validateForm } from "../../utils/authUtils";
 import { attemptSignUp } from "../../api/authFetches";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/useUserStore";
 
 export default function SignupForm() {
+  const { loginUser } = useUserStore();
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -59,8 +62,12 @@ export default function SignupForm() {
     if (hasErrors) return;
 
     try {
-      await attemptSignUp(formValues.email, formValues.password);
+      const response = await attemptSignUp(
+        formValues.email,
+        formValues.password
+      );
       console.log("New user successfully created");
+      loginUser(response.user);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Signup failed";
