@@ -1,38 +1,58 @@
 import express, { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
-import { hashPassword } from "../utils/authUtils";
+import { attachAuthCookie, hashPassword } from "../utils/authUtils";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
 router.post("/login", async (req: Request, res: Response) => {
+  // Retrieve email and password from request + verify
   const { email, password } = req.body;
-
   if (!email || !password)
     return res.status(400).json({ error: "Missing email or password" });
 
+  // Fetch userAccount from database + include their bookmarks
   try {
-    const userAccount = await prisma.user.findUnique({ where: { email } });
+    const userAccount = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        bookmarks: {
+          select: {
+            externalId: true,
+            title: true,
+            mediaType: true,
+            adult: true,
+            posterPath: true,
+            releaseDate: true,
+          },
+        },
+      },
+    });
 
+    // Check if userAccount was found
     if (!userAccount)
       return res
         .status(404)
         .json({ error: "No account found, please create one" });
 
+    // Check passwords match
     const passwordsMatch = await bcrypt.compare(
       password,
       userAccount!.password
     );
-
     if (!passwordsMatch)
       return res.status(401).json({ error: "Incorrect credentials" });
 
-    sendAuthCookie(res, { userId: userAccount.id, email: userAccount.email });
+    // Attach new cookie to response
+    attachAuthCookie(res, { userId: userAccount.id });
 
     return res.status(200).json({
       message: "Successful login",
-      user: { id: userAccount.id, email: userAccount.email },
+      user: {
+        username: userAccount.username,
+        email: userAccount.email,
+      },
+      userBookmarks: userAccount.bookmarks,
     });
   } catch (error) {
     console.error("Error with user login: ", error);
@@ -41,32 +61,42 @@ router.post("/login", async (req: Request, res: Response) => {
 });
 
 router.post("/signup", async (req: Request, res: Response) => {
+  // Retrieve email and password from request + verify
   const { email, password } = req.body;
-
   if (!email || !password)
     return res.status(400).json({ error: "Missing email or password" });
 
   try {
+    // Check if user exists already, if so tell client to login instead
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser)
       return res
         .status(409)
         .json({ error: "User already exists, please use login" });
 
+    // Prepare data for making new user
     const hashedPassword = await hashPassword(password);
+    const newUsername = email.split("@")[0];
 
+    // Make new user in database
     const newUser = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
+        username: newUsername,
       },
     });
 
-    sendAuthCookie(res, { userId: newUser.id, email: newUser.email });
+    // Attach new cookie to response
+    attachAuthCookie(res, { userId: newUser.id });
 
-    res
-      .status(201)
-      .json({ message: "User created successfully", userId: newUser.id });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        username: newUser.username,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
     console.error("Signup error: ", error);
     res.status(500).json({ error: "Failed to sign up" });
@@ -74,6 +104,7 @@ router.post("/signup", async (req: Request, res: Response) => {
 });
 
 router.post("/logout", (req: Request, res: Response) => {
+  // Timeout existing auth cookie so that client will remove it and end session
   res.cookie("auth_token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -85,25 +116,3 @@ router.post("/logout", (req: Request, res: Response) => {
 });
 
 export default router;
-
-function sendAuthCookie(
-  res: Response,
-  payload: { userId: string; email: string }
-) {
-  const token = jwt.sign(
-    { userId: payload.userId, email: payload.email },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: "7d",
-    }
-  );
-
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-
-    // must be true in production (over HTTPS) and false in development (over HTTP)
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "strict",
-  });
-}

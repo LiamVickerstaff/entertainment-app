@@ -7,13 +7,12 @@ import {
   fetchRecommendedMedia,
   fetchTrendingMedia,
 } from "../../api/tmdbFetches";
-import type { MixedMediaType } from "../../types/mediaDataTypes";
+import type { MediaData } from "../../types/mediaDataTypes";
+import { normalizeContentData } from "../../utils/tmbdUtils";
 
 export default function Home() {
-  const [trendingData, setTrendingData] = useState<MixedMediaType[] | []>([]);
-  const [recommendedData, setRecommendedData] = useState<MixedMediaType[] | []>(
-    []
-  );
+  const [trendingData, setTrendingData] = useState<MediaData[] | []>([]);
+  const [recommendedData, setRecommendedData] = useState<MediaData[] | []>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +21,8 @@ export default function Home() {
       try {
         const data = await fetchTrendingMedia();
         console.log("recieved list");
-        setTrendingData(data);
+        const normalizedData = normalizeContentData(data);
+        setTrendingData(normalizedData);
       } catch (err) {
         const errorMessage =
           (err as Error).message ||
@@ -37,7 +37,8 @@ export default function Home() {
       try {
         const data = await fetchRecommendedMedia();
         console.log("recieved list");
-        setRecommendedData(data);
+        const normalizedData = normalizeContentData(data);
+        setRecommendedData(normalizedData);
       } catch (err) {
         const errorMessage =
           (err as Error).message ||
@@ -60,16 +61,15 @@ export default function Home() {
   if (loading)
     return (
       <div className={styles.container}>
-        <h2>Trending</h2>
         <p>Loading...</p>
       </div>
     );
   if (error)
     return (
       <div className={styles.container}>
-        <h2>Trending</h2>
         <p>
-          Oops! We can't find any movies at the moment. Please try again later!
+          Oops! We can't find any media content at the moment. Please try again
+          later!
         </p>
       </div>
     );
@@ -81,19 +81,7 @@ export default function Home() {
         <div className={styles.carousel}>
           {trendingData &&
             trendingData.map((content, index) => (
-              <TrendingContentCard
-                key={index}
-                title={content?.title || content.name}
-                imgUrl={`https://image.tmdb.org/t/p/w780${content.poster_path}`}
-                year={
-                  (content.release_date ?? content.first_air_date).slice(
-                    0,
-                    4
-                  ) ?? "N/A"
-                }
-                contentType={content.media_type as "movie" | "TV Series"}
-                advisoryRating={content.adult ? "18+" : "PG"}
-              />
+              <TrendingContentCard key={index} content={content} />
             ))}
         </div>
       </div>
@@ -102,19 +90,7 @@ export default function Home() {
         <div className={styles.recommendedGrid}>
           {recommendedData &&
             recommendedData.map((content, index) => (
-              <RegularContentCard
-                key={index}
-                title={content.title || content.name}
-                imgUrl={`https://image.tmdb.org/t/p/w780${content.poster_path}`}
-                year={
-                  (content.release_date ?? content.first_air_date).slice(
-                    0,
-                    4
-                  ) ?? "N/A"
-                }
-                contentType={content.media_type as "movie" | "TV Series"}
-                advisoryRating={content.adult ? "18+" : "PG"}
-              />
+              <RegularContentCard key={index} content={content} />
             ))}
         </div>
       </div>

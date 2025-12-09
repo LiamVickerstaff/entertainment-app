@@ -1,3 +1,6 @@
+import { useNavigate } from "react-router-dom";
+import { attemptLogout } from "../../api/authFetches";
+import { useUserStore } from "../../stores/useUserStore";
 import styles from "./UserModal.module.css";
 
 export default function UserModal({
@@ -7,8 +10,22 @@ export default function UserModal({
   dialogRef: React.RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
 }) {
-  function handleLogout() {
+  const { username, email, logoutUser } = useUserStore();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
     console.log("attempt logout");
+
+    try {
+      await attemptLogout(); // tells server to expire the cookie, instructing the client
+      // to delete it from storage
+
+      logoutUser(); // Remove zustand user-details-storage
+      handleCloseModal(); // unmount UserModal component
+      navigate("/login"); // navigate user to login page
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
   }
 
   return (
@@ -28,7 +45,8 @@ export default function UserModal({
           alt="avatar"
           className={styles.modalAvatar}
         />
-        <p className={styles.modalUsername}>Username</p>
+        <p className={styles.modalUsername}>{username || "guest"}</p>
+        <p className={styles.modalUsername}>{email || "guest email"}</p>
       </div>
       <button onClick={handleLogout} className={styles.logoutBtn}>
         Logout

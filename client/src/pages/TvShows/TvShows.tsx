@@ -3,18 +3,29 @@ import RegularContentCard from "../../components/ContentDisplayCards/RegularCont
 
 import { useEffect, useState } from "react";
 import { fetchTrendingTvShows } from "../../api/tmdbFetches";
-import type { TvDataType } from "../../types/mediaDataTypes";
+import type { MediaData } from "../../types/mediaDataTypes";
+import { useLocation } from "react-router-dom";
+import { useBookmarksStore } from "../../stores/useBookmarksStore";
+import { normalizeContentData } from "../../utils/tmbdUtils";
 
 export default function TvShows({ title }: { title: string }) {
-  const [tvShowData, setTvShowData] = useState<TvDataType[]>([]);
+  const location = useLocation();
+  const { bookmarks } = useBookmarksStore();
+
+  const [tvShowData, setTvShowData] = useState<MediaData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadMovies() {
+    async function loadTvShows() {
       try {
-        const data = await fetchTrendingTvShows();
-        setTvShowData(data);
+        const isOnBookmarksPage = location.pathname === "/bookmarks";
+        if (isOnBookmarksPage) {
+          setTvShowData(bookmarks.filter((b) => b.mediaType === "tv"));
+        } else {
+          const responseData = await fetchTrendingTvShows();
+          setTvShowData(normalizeContentData(responseData));
+        }
       } catch (err) {
         const errorMessage =
           (err as Error).message ||
@@ -25,12 +36,8 @@ export default function TvShows({ title }: { title: string }) {
       }
     }
 
-    loadMovies();
-  }, []);
-
-  useEffect(() => {
-    console.log(tvShowData);
-  }, [tvShowData]);
+    loadTvShows();
+  }, [bookmarks, location]);
 
   if (loading)
     return (
@@ -55,15 +62,8 @@ export default function TvShows({ title }: { title: string }) {
       <h2>{title}</h2>
       <div className={styles.grid}>
         {tvShowData &&
-          tvShowData.map((tvShow, index) => (
-            <RegularContentCard
-              key={index}
-              title={tvShow.name}
-              imgUrl={`https://image.tmdb.org/t/p/w780${tvShow.poster_path}`}
-              year={tvShow.first_air_date.slice(0, 4)}
-              contentType={tvShow.media_type as "movie" | "TV Series"}
-              advisoryRating={tvShow.adult ? "18+" : "PG"}
-            />
+          tvShowData.map((content, index) => (
+            <RegularContentCard key={index} content={content} />
           ))}
       </div>
     </div>

@@ -3,8 +3,17 @@ import { validateEmail, validateForm } from "../../utils/authUtils";
 import styles from "./auth.module.css";
 import { attemptLogin } from "../../api/authFetches";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/useUserStore";
+import {
+  useBookmarksStore,
+  type Bookmark,
+} from "../../stores/useBookmarksStore";
 
 export default function LoginForm() {
+  const { loginUser } = useUserStore();
+  const { setBookmarks } = useBookmarksStore();
+  const navigate = useNavigate();
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -16,8 +25,6 @@ export default function LoginForm() {
     repeatPassword: "",
     authError: "",
   });
-
-  const navigate = useNavigate();
 
   const [hasSubmit, setHasSubmit] = useState<boolean>(false);
 
@@ -62,8 +69,13 @@ export default function LoginForm() {
     if (hasErrors) return;
 
     try {
-      await attemptLogin(formValues.email, formValues.password);
-      console.log("User successfully logged in");
+      const response = (await attemptLogin(
+        formValues.email,
+        formValues.password
+      )) as LoginFetchRes;
+      console.log("User successfully logged in", response);
+      loginUser(response.user);
+      setBookmarks(response.userBookmarks);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Login failed";
@@ -139,4 +151,14 @@ export default function LoginForm() {
       </form>
     </div>
   );
+}
+
+export interface LoginFetchRes {
+  message: string;
+  user: {
+    username: string;
+    email: string;
+    bookmarkIds: number[];
+  };
+  userBookmarks: Bookmark[];
 }

@@ -2,9 +2,17 @@ import { useState } from "react";
 import styles from "./auth.module.css";
 import { validateEmail, validateForm } from "../../utils/authUtils";
 import { attemptSignUp } from "../../api/authFetches";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/useUserStore";
+import { useBookmarksStore } from "../../stores/useBookmarksStore";
 
 export default function SignupForm() {
+  const { loginUser } = useUserStore();
+  const { setBookmarks } = useBookmarksStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectedFromAuth = location.state?.fromAuth === true;
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -16,8 +24,6 @@ export default function SignupForm() {
     repeatPassword: "",
     authError: "",
   });
-
-  const navigate = useNavigate();
 
   const [hasSubmit, setHasSubmit] = useState<boolean>(false);
 
@@ -59,8 +65,13 @@ export default function SignupForm() {
     if (hasErrors) return;
 
     try {
-      await attemptSignUp(formValues.email, formValues.password);
+      const response = (await attemptSignUp(
+        formValues.email,
+        formValues.password
+      )) as SignupFetchRes;
       console.log("New user successfully created");
+      loginUser(response.user);
+      setBookmarks([]);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Signup failed";
@@ -79,6 +90,13 @@ export default function SignupForm() {
 
   return (
     <div className={styles.authFormContainer}>
+      {/* Display message after non-authenticated redirect */}
+      {redirectedFromAuth && (
+        <div>
+          <p>Ready to watch all your favourite movies?</p>
+          <p>Create your account today!</p>
+        </div>
+      )}
       <form method="POST" onSubmit={handleSubmit} noValidate>
         <h2 className={styles.formTitle}>Sign Up</h2>
         <div className={styles.formFieldsGroup}>
@@ -157,4 +175,12 @@ export default function SignupForm() {
       </form>
     </div>
   );
+}
+
+export interface SignupFetchRes {
+  message: string;
+  user: {
+    username: string;
+    email: string;
+  };
 }

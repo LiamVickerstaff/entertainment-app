@@ -2,10 +2,8 @@ export async function apiFetchWrapper<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const url = `${import.meta.env.VITE_BACKEND_API_URL}${endpoint}`;
-
   try {
-    const res = await fetch(url, options);
+    const res = await fetch(`/api${endpoint}`, options);
 
     if (!res.ok) {
       let errorMessage = "Failed Request";

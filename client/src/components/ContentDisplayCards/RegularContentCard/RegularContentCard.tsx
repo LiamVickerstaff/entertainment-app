@@ -1,25 +1,22 @@
-import { useState } from "react";
 import styles from "./RegularContentCard.module.css";
-import type { ContentCardProps } from "../TrendingContentCard/TrendingContentCard";
+import { useBookmark } from "../../../hooks/useBookmark";
+import type { MediaData } from "../../../types/mediaDataTypes";
 
 export default function RegularContentCard({
-  title,
-  imgUrl,
-  year,
-  contentType,
-  advisoryRating,
-}: ContentCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
-
-  function handleToggleBookmark() {
-    setIsBookmarked((prev) => !prev);
-  }
+  content,
+}: {
+  content: MediaData;
+}) {
+  const { isBookmarked, handleAddBookmark, handleRemoveBookmark } =
+    useBookmark(content);
 
   return (
     <div className={styles.container}>
       <div
         className={`${styles.contentImageDisplay}`}
-        style={{ backgroundImage: `url(${imgUrl})` }}
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/w780${content.posterPath})`,
+        }}
       >
         <button className={styles.hoverPlayBackdrop}>
           <div className={styles.playbutton}>
@@ -33,7 +30,7 @@ export default function RegularContentCard({
           className={`${styles.bookmarkBtn} ${
             isBookmarked ? styles.isBookmarked : ""
           }`}
-          onClick={handleToggleBookmark}
+          onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
         >
           <svg
             viewBox="0 0 12 14"
@@ -50,11 +47,11 @@ export default function RegularContentCard({
       </div>
       <div className={styles.contentInfoSection}>
         <div className={styles.contentMetadataGroup}>
-          <span>{year}</span>
+          <span>{content.releaseDate.slice(0, 4)}</span>
           <span>&bull;</span>
 
-          <span className={styles.contentType}>
-            {contentType === "movie" ? (
+          <span className={styles.mediaType}>
+            {content.mediaType === "movie" ? (
               // TV SVG
               <svg viewBox="0 0 10 10">
                 <path
@@ -73,12 +70,12 @@ export default function RegularContentCard({
                 />
               </svg>
             )}
-            {contentType === "movie" ? "Movie" : "TV Series"}
+            {content.mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
-          <span>{advisoryRating}</span>
+          <span>{content.adult ? "18+" : "PG"}</span>
         </div>
-        <p className={styles.contentTitle}>{title}</p>
+        <p className={styles.contentTitle}>{content.title}</p>
       </div>
     </div>
   );

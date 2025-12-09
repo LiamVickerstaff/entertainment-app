@@ -1,23 +1,20 @@
-import { useState } from "react";
 import styles from "./TrendingContentCard.module.css";
+import { useBookmark } from "../../../hooks/useBookmark";
+import type { MediaData } from "../../../types/mediaDataTypes";
 
 export default function TrendingContentCard({
-  title,
-  imgUrl,
-  year,
-  contentType,
-  advisoryRating,
-}: ContentCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
-
-  function handleToggleBookmark() {
-    setIsBookmarked((prev) => !prev);
-  }
-
+  content,
+}: {
+  content: MediaData;
+}) {
+  const { isBookmarked, handleAddBookmark, handleRemoveBookmark } =
+    useBookmark(content);
   return (
     <div
       className={`${styles.container}`}
-      style={{ backgroundImage: `url(${imgUrl})` }}
+      style={{
+        backgroundImage: `url(https://image.tmdb.org/t/p/w780${content.posterPath})`,
+      }}
     >
       <button className={styles.hoverPlayBackdrop}>
         <div className={styles.playbutton}>
@@ -31,7 +28,7 @@ export default function TrendingContentCard({
         className={`${styles.bookmarkBtn} ${
           isBookmarked ? styles.isBookmarked : ""
         }`}
-        onClick={handleToggleBookmark}
+        onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
       >
         <svg
           viewBox="0 0 12 14"
@@ -47,10 +44,10 @@ export default function TrendingContentCard({
       </button>
       <div className={styles.cardTextGroup}>
         <div className={styles.contentMetadataGroup}>
-          <span>{year}</span>
+          <span>{content.releaseDate.slice(0, 4)}</span>
           <span>&bull;</span>
-          <span className={styles.contentType}>
-            {contentType === "movie" ? (
+          <span className={styles.mediaType}>
+            {content.mediaType === "movie" ? (
               // TV SVG
               <svg viewBox="0 0 10 10">
                 <path
@@ -69,21 +66,13 @@ export default function TrendingContentCard({
                 />
               </svg>
             )}
-            {contentType === "movie" ? "Movie" : "TV Series"}
+            {content.mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
-          <span>{advisoryRating}</span>
+          <span>{content.adult ? "18+" : "PG"}</span>
         </div>
-        <p className={styles.contentTitle}>{title}</p>
+        <p className={styles.contentTitle}>{content.title}</p>
       </div>
     </div>
   );
-}
-
-export interface ContentCardProps {
-  title: string;
-  contentType: "movie" | "TV Series";
-  imgUrl: string;
-  year: string;
-  advisoryRating: string;
 }

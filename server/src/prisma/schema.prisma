@@ -14,8 +14,8 @@ datasource db {
 }
 
 enum MediaType {
-  MOVIE
-  TV
+  movie
+  tv
 }
 
 
@@ -34,8 +34,12 @@ model User {
 model Bookmark {
   id String @id @default(uuid())
   userId String
-  externalId String //the id of the content item from OMDb API
+  externalId Int //the id of the content item from external API
+  title String
   mediaType MediaType
+  adult Boolean
+  posterPath String
+  releaseDate String
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id]) // defines relationship to User table

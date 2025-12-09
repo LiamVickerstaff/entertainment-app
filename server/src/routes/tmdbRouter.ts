@@ -4,6 +4,7 @@ import { cacheThenApiFetch } from "../utils/cacheUtils";
 const tmdbRouter = express.Router();
 
 tmdbRouter.get("/all/trending", async (req: Request, res: Response) => {
+  console.log("Reached all/trending");
   const CACHE_KEY = "all_trending";
 
   const fetchRequests = [

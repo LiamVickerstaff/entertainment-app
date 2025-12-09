@@ -1,3 +1,5 @@
+import type { NavigateFunction } from "react-router-dom";
+
 // Checks form is valid
 export function validateForm(values: {
   email: string;
@@ -25,4 +27,11 @@ export function validateEmail(email: string) {
   return re.test(email);
 }
 
-
+export function handleNotAuthorized(
+  error: unknown,
+  navigate: NavigateFunction
+) {
+  if (error instanceof Error && error.message === "Not authenticated") {
+    navigate("/signup", { state: { fromAuth: true } });
+  }
+}
