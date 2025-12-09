@@ -5,12 +5,12 @@ const router = express.Router();
 
 router.post("/add", async (req: Request, res: Response) => {
   const userId = req.userId;
-  const { mediaId, mediaType } = req.body;
+  let bookmarkToAdd = req.body.newBookmark;
 
-  if (!mediaId || !mediaType) {
+  if (!bookmarkToAdd) {
     return res
       .status(400)
-      .json({ error: "missing mediaId or mediaType in request body" });
+      .json({ error: "missing new bookmark to add in request body" });
   }
 
   if (!userId) {
@@ -19,26 +19,27 @@ router.post("/add", async (req: Request, res: Response) => {
       .json({ error: "No userId passed to /bookmark/add route" });
   }
 
-  console.log(`user: ${userId} tried add bookmark for content: ${mediaId}`);
+  console.log(
+    `user: ${userId} tried add bookmark for content: ${bookmarkToAdd}`
+  );
+
+  bookmarkToAdd = { ...bookmarkToAdd, userId };
 
   let newBookmark;
 
   try {
     newBookmark = await prisma.bookmark.create({
-      data: {
-        userId,
-        externalId: mediaId,
-        mediaType: mediaType as "movie" | "tv",
-      },
+      data: bookmarkToAdd,
     });
   } catch (error) {
     console.error("Database error, prisma failed to save new bookmark:", error);
     return res.status(500).json({ error: "failed to save new bookmark" });
   }
 
-  return res
-    .status(200)
-    .json({ message: "received request", bookmarkId: newBookmark.externalId });
+  return res.status(200).json({
+    message: "successfully added new bookmark",
+    bookmark: newBookmark,
+  });
 });
 
 router.delete("/remove/:mediaId", async (req: Request, res: Response) => {
@@ -69,7 +70,7 @@ router.delete("/remove/:mediaId", async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Successfully deleted bookmark",
-      bookmarkId: removedBookmark.externalId,
+      removedBookmarkId: removedBookmark.externalId,
     });
   } catch (error) {
     const e = error as any;

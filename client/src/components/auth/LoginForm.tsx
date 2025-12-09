@@ -4,9 +4,14 @@ import styles from "./auth.module.css";
 import { attemptLogin } from "../../api/authFetches";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/useUserStore";
+import {
+  useBookmarksStore,
+  type Bookmark,
+} from "../../stores/useBookmarksStore";
 
 export default function LoginForm() {
   const { loginUser } = useUserStore();
+  const { setBookmarks } = useBookmarksStore();
   const navigate = useNavigate();
 
   const [formValues, setFormValues] = useState({
@@ -70,6 +75,7 @@ export default function LoginForm() {
       )) as LoginFetchRes;
       console.log("User successfully logged in", response);
       loginUser(response.user);
+      setBookmarks(response.userBookmarks);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Login failed";
@@ -154,4 +160,5 @@ export interface LoginFetchRes {
     email: string;
     bookmarkIds: number[];
   };
+  userBookmarks: Bookmark[];
 }

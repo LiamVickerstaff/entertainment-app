@@ -3,18 +3,29 @@ import RegularContentCard from "../../components/ContentDisplayCards/RegularCont
 
 import { useEffect, useState } from "react";
 import { fetchTrendingMovies } from "../../api/tmdbFetches";
-import type { MovieDataType } from "../../types/mediaDataTypes";
+import { type MediaData } from "../../types/mediaDataTypes";
+import { useLocation } from "react-router-dom";
+import { useBookmarksStore } from "../../stores/useBookmarksStore";
+import { normalizeContentData } from "../../utils/tmbdUtils";
 
 export default function Movies({ title }: { title: string }) {
-  const [movieData, setMovieData] = useState<MovieDataType[]>([]);
+  const location = useLocation();
+  const { bookmarks } = useBookmarksStore();
+
+  const [movieData, setMovieData] = useState<MediaData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadMovies() {
       try {
-        const data = await fetchTrendingMovies();
-        setMovieData(data);
+        const isOnBookmarksPage = location.pathname === "/bookmarks";
+        if (isOnBookmarksPage) {
+          setMovieData(bookmarks.filter((b) => b.mediaType === "movie"));
+        } else {
+          const responseData = await fetchTrendingMovies();
+          setMovieData(normalizeContentData(responseData));
+        }
       } catch (err) {
         const errorMessage =
           (err as Error).message ||
@@ -26,11 +37,7 @@ export default function Movies({ title }: { title: string }) {
     }
 
     loadMovies();
-  }, []);
-
-  // useEffect(() => {
-  //   console.log(movieData);
-  // }, [movieData]);
+  }, [bookmarks, location]);
 
   if (loading)
     return (
@@ -54,15 +61,15 @@ export default function Movies({ title }: { title: string }) {
       <h2>{title}</h2>
       <div className={styles.grid}>
         {movieData &&
-          movieData.map((movie, index) => (
+          movieData.map((content, index) => (
             <RegularContentCard
               key={index}
-              title={movie.title}
-              imgUrl={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
-              year={movie.release_date.slice(0, 4)}
-              mediaType={movie.media_type as "movie" | "tv"}
-              advisoryRating={movie.adult ? "18+" : "PG"}
-              mediaId={movie.id}
+              title={content.title}
+              posterPath={content.posterPath}
+              releaseDate={content.releaseDate}
+              mediaType={content.mediaType}
+              adult={content.adult}
+              externalId={content.externalId}
             />
           ))}
       </div>

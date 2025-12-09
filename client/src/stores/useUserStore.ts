@@ -1,20 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useBookmarksStore } from "./useBookmarksStore";
 
 interface UserStore {
   username: string;
   email: string;
-  bookmarkIds: number[];
 
-  loginUser: (userPaylod: {
-    username: string;
-    email: string;
-    bookmarkIds: number[];
-  }) => void;
+  loginUser: (userPaylod: { username: string; email: string }) => void;
   logoutUser: () => void;
-
-  addBookmarkIdToStore: (bookmarkId: number) => void;
-  removeBookmarkIdFromStore: (bookmarkId: number) => void;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -22,36 +15,27 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       username: "",
       email: "",
-      bookmarkIds: [],
 
       loginUser: (userPaylod) => {
         set(() => ({
           username: userPaylod.username,
           email: userPaylod.email,
-          bookmarkIds: userPaylod.bookmarkIds || [],
         }));
       },
 
       logoutUser: () => {
+        // Reset store values
         set(() => ({
           username: "",
           email: "",
-          bookmarkIds: [],
         }));
 
+        // delete user-details-storage from client local storage
         useUserStore.persist.clearStorage();
-      },
 
-      addBookmarkIdToStore: (bookmarkId) => {
-        set((state) => ({
-          bookmarkIds: [...state.bookmarkIds, bookmarkId],
-        }));
-      },
-
-      removeBookmarkIdFromStore: (bookmarkId) => {
-        set((state) => ({
-          bookmarkIds: state.bookmarkIds.filter((id) => id !== bookmarkId),
-        }));
+        // Clear and delete bookmark storage from local storage
+        useBookmarksStore.getState().resetBookmarksStore();
+        useBookmarksStore.persist.clearStorage();
       },
     }),
     { name: "user-details-storage" }

@@ -4,9 +4,11 @@ import { validateEmail, validateForm } from "../../utils/authUtils";
 import { attemptSignUp } from "../../api/authFetches";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/useUserStore";
+import { useBookmarksStore } from "../../stores/useBookmarksStore";
 
 export default function SignupForm() {
   const { loginUser } = useUserStore();
+  const { setBookmarks } = useBookmarksStore();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectedFromAuth = location.state?.fromAuth === true;
@@ -63,12 +65,13 @@ export default function SignupForm() {
     if (hasErrors) return;
 
     try {
-      const signUpResponse = await attemptSignUp(
+      const response = (await attemptSignUp(
         formValues.email,
         formValues.password
-      );
+      )) as SignupFetchRes;
       console.log("New user successfully created");
-      loginUser(signUpResponse.user);
+      loginUser(response.user);
+      setBookmarks([]);
       navigate("/");
     } catch (error: unknown) {
       let errorMessage = "Signup failed";
@@ -172,4 +175,12 @@ export default function SignupForm() {
       </form>
     </div>
   );
+}
+
+export interface SignupFetchRes {
+  message: string;
+  user: {
+    username: string;
+    email: string;
+  };
 }

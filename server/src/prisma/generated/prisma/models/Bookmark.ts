@@ -38,7 +38,11 @@ export type BookmarkMinAggregateOutputType = {
   id: string | null
   userId: string | null
   externalId: number | null
+  title: string | null
   mediaType: $Enums.MediaType | null
+  adult: boolean | null
+  posterPath: string | null
+  releaseDate: string | null
   createdAt: Date | null
 }
 
@@ -46,7 +50,11 @@ export type BookmarkMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   externalId: number | null
+  title: string | null
   mediaType: $Enums.MediaType | null
+  adult: boolean | null
+  posterPath: string | null
+  releaseDate: string | null
   createdAt: Date | null
 }
 
@@ -54,7 +62,11 @@ export type BookmarkCountAggregateOutputType = {
   id: number
   userId: number
   externalId: number
+  title: number
   mediaType: number
+  adult: number
+  posterPath: number
+  releaseDate: number
   createdAt: number
   _all: number
 }
@@ -72,7 +84,11 @@ export type BookmarkMinAggregateInputType = {
   id?: true
   userId?: true
   externalId?: true
+  title?: true
   mediaType?: true
+  adult?: true
+  posterPath?: true
+  releaseDate?: true
   createdAt?: true
 }
 
@@ -80,7 +96,11 @@ export type BookmarkMaxAggregateInputType = {
   id?: true
   userId?: true
   externalId?: true
+  title?: true
   mediaType?: true
+  adult?: true
+  posterPath?: true
+  releaseDate?: true
   createdAt?: true
 }
 
@@ -88,7 +108,11 @@ export type BookmarkCountAggregateInputType = {
   id?: true
   userId?: true
   externalId?: true
+  title?: true
   mediaType?: true
+  adult?: true
+  posterPath?: true
+  releaseDate?: true
   createdAt?: true
   _all?: true
 }
@@ -183,7 +207,11 @@ export type BookmarkGroupByOutputType = {
   id: string
   userId: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt: Date
   _count: BookmarkCountAggregateOutputType | null
   _avg: BookmarkAvgAggregateOutputType | null
@@ -214,7 +242,11 @@ export type BookmarkWhereInput = {
   id?: Prisma.StringFilter<"Bookmark"> | string
   userId?: Prisma.StringFilter<"Bookmark"> | string
   externalId?: Prisma.IntFilter<"Bookmark"> | number
+  title?: Prisma.StringFilter<"Bookmark"> | string
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
+  adult?: Prisma.BoolFilter<"Bookmark"> | boolean
+  posterPath?: Prisma.StringFilter<"Bookmark"> | string
+  releaseDate?: Prisma.StringFilter<"Bookmark"> | string
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -223,7 +255,11 @@ export type BookmarkOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
+  adult?: Prisma.SortOrder
+  posterPath?: Prisma.SortOrder
+  releaseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -236,7 +272,11 @@ export type BookmarkWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BookmarkWhereInput | Prisma.BookmarkWhereInput[]
   userId?: Prisma.StringFilter<"Bookmark"> | string
   externalId?: Prisma.IntFilter<"Bookmark"> | number
+  title?: Prisma.StringFilter<"Bookmark"> | string
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
+  adult?: Prisma.BoolFilter<"Bookmark"> | boolean
+  posterPath?: Prisma.StringFilter<"Bookmark"> | string
+  releaseDate?: Prisma.StringFilter<"Bookmark"> | string
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId_externalId">
@@ -245,7 +285,11 @@ export type BookmarkOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
+  adult?: Prisma.SortOrder
+  posterPath?: Prisma.SortOrder
+  releaseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BookmarkCountOrderByAggregateInput
   _avg?: Prisma.BookmarkAvgOrderByAggregateInput
@@ -261,14 +305,22 @@ export type BookmarkScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
   externalId?: Prisma.IntWithAggregatesFilter<"Bookmark"> | number
+  title?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
   mediaType?: Prisma.EnumMediaTypeWithAggregatesFilter<"Bookmark"> | $Enums.MediaType
+  adult?: Prisma.BoolWithAggregatesFilter<"Bookmark"> | boolean
+  posterPath?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
+  releaseDate?: Prisma.StringWithAggregatesFilter<"Bookmark"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Bookmark"> | Date | string
 }
 
 export type BookmarkCreateInput = {
   id?: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutBookmarksInput
 }
@@ -277,14 +329,22 @@ export type BookmarkUncheckedCreateInput = {
   id?: string
   userId: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutBookmarksNestedInput
 }
@@ -293,7 +353,11 @@ export type BookmarkUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -301,14 +365,22 @@ export type BookmarkCreateManyInput = {
   id?: string
   userId: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -316,7 +388,11 @@ export type BookmarkUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -339,7 +415,11 @@ export type BookmarkCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
+  adult?: Prisma.SortOrder
+  posterPath?: Prisma.SortOrder
+  releaseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -351,7 +431,11 @@ export type BookmarkMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
+  adult?: Prisma.SortOrder
+  posterPath?: Prisma.SortOrder
+  releaseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -359,7 +443,11 @@ export type BookmarkMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  title?: Prisma.SortOrder
   mediaType?: Prisma.SortOrder
+  adult?: Prisma.SortOrder
+  posterPath?: Prisma.SortOrder
+  releaseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -421,17 +509,29 @@ export type EnumMediaTypeFieldUpdateOperationsInput = {
   set?: $Enums.MediaType
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type BookmarkCreateWithoutUserInput = {
   id?: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
 }
 
 export type BookmarkUncheckedCreateWithoutUserInput = {
   id?: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
 }
 
@@ -468,35 +568,55 @@ export type BookmarkScalarWhereInput = {
   id?: Prisma.StringFilter<"Bookmark"> | string
   userId?: Prisma.StringFilter<"Bookmark"> | string
   externalId?: Prisma.IntFilter<"Bookmark"> | number
+  title?: Prisma.StringFilter<"Bookmark"> | string
   mediaType?: Prisma.EnumMediaTypeFilter<"Bookmark"> | $Enums.MediaType
+  adult?: Prisma.BoolFilter<"Bookmark"> | boolean
+  posterPath?: Prisma.StringFilter<"Bookmark"> | string
+  releaseDate?: Prisma.StringFilter<"Bookmark"> | string
   createdAt?: Prisma.DateTimeFilter<"Bookmark"> | Date | string
 }
 
 export type BookmarkCreateManyUserInput = {
   id?: string
   externalId: number
+  title: string
   mediaType: $Enums.MediaType
+  adult: boolean
+  posterPath: string
+  releaseDate: string
   createdAt?: Date | string
 }
 
 export type BookmarkUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookmarkUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BookmarkUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   mediaType?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  adult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  posterPath?: Prisma.StringFieldUpdateOperationsInput | string
+  releaseDate?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -506,7 +626,11 @@ export type BookmarkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   userId?: boolean
   externalId?: boolean
+  title?: boolean
   mediaType?: boolean
+  adult?: boolean
+  posterPath?: boolean
+  releaseDate?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bookmark"]>
@@ -515,7 +639,11 @@ export type BookmarkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   userId?: boolean
   externalId?: boolean
+  title?: boolean
   mediaType?: boolean
+  adult?: boolean
+  posterPath?: boolean
+  releaseDate?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bookmark"]>
@@ -524,7 +652,11 @@ export type BookmarkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   userId?: boolean
   externalId?: boolean
+  title?: boolean
   mediaType?: boolean
+  adult?: boolean
+  posterPath?: boolean
+  releaseDate?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bookmark"]>
@@ -533,11 +665,15 @@ export type BookmarkSelectScalar = {
   id?: boolean
   userId?: boolean
   externalId?: boolean
+  title?: boolean
   mediaType?: boolean
+  adult?: boolean
+  posterPath?: boolean
+  releaseDate?: boolean
   createdAt?: boolean
 }
 
-export type BookmarkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "externalId" | "mediaType" | "createdAt", ExtArgs["result"]["bookmark"]>
+export type BookmarkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "externalId" | "title" | "mediaType" | "adult" | "posterPath" | "releaseDate" | "createdAt", ExtArgs["result"]["bookmark"]>
 export type BookmarkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -557,7 +693,11 @@ export type $BookmarkPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     userId: string
     externalId: number
+    title: string
     mediaType: $Enums.MediaType
+    adult: boolean
+    posterPath: string
+    releaseDate: string
     createdAt: Date
   }, ExtArgs["result"]["bookmark"]>
   composites: {}
@@ -986,7 +1126,11 @@ export interface BookmarkFieldRefs {
   readonly id: Prisma.FieldRef<"Bookmark", 'String'>
   readonly userId: Prisma.FieldRef<"Bookmark", 'String'>
   readonly externalId: Prisma.FieldRef<"Bookmark", 'Int'>
+  readonly title: Prisma.FieldRef<"Bookmark", 'String'>
   readonly mediaType: Prisma.FieldRef<"Bookmark", 'MediaType'>
+  readonly adult: Prisma.FieldRef<"Bookmark", 'Boolean'>
+  readonly posterPath: Prisma.FieldRef<"Bookmark", 'String'>
+  readonly releaseDate: Prisma.FieldRef<"Bookmark", 'String'>
   readonly createdAt: Prisma.FieldRef<"Bookmark", 'DateTime'>
 }
     

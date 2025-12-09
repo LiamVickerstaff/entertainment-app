@@ -87,7 +87,11 @@ export const BookmarkScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   externalId: 'externalId',
+  title: 'title',
   mediaType: 'mediaType',
+  adult: 'adult',
+  posterPath: 'posterPath',
+  releaseDate: 'releaseDate',
   createdAt: 'createdAt'
 } as const
 

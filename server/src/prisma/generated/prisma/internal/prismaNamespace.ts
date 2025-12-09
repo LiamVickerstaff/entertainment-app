@@ -608,7 +608,11 @@ export const BookmarkScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   externalId: 'externalId',
+  title: 'title',
   mediaType: 'mediaType',
+  adult: 'adult',
+  posterPath: 'posterPath',
+  releaseDate: 'releaseDate',
   createdAt: 'createdAt'
 } as const
 
@@ -698,6 +702,13 @@ export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'MediaType[]'
  */
 export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

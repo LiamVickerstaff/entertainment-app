@@ -1,5 +1,4 @@
 import styles from "./TrendingContentCard.module.css";
-import { useUserStore } from "../../../stores/useUserStore";
 import {
   addBookmarkFetch,
   removeBookmarkFetch,
@@ -7,40 +6,55 @@ import {
 import type { BookmarkFetchRes } from "../RegularContentCard/RegularContentCard";
 import { handleNotAuthorized } from "../../../utils/authUtils";
 import { useNavigate } from "react-router-dom";
+import { useBookmarksStore } from "../../../stores/useBookmarksStore";
 
 export default function TrendingContentCard({
   title,
-  imgUrl,
-  year,
+  posterPath,
+  releaseDate,
   mediaType,
-  advisoryRating,
-  mediaId,
+  adult,
+  externalId,
 }: ContentCardProps) {
-  const { bookmarkIds, addBookmarkIdToStore, removeBookmarkIdFromStore } =
-    useUserStore();
-
+  const { bookmarkIds, addBookmark, removeBookmark } = useBookmarksStore();
   const navigate = useNavigate();
 
-  const isBookmarked = bookmarkIds.includes(mediaId);
+  const isBookmarked = bookmarkIds.includes(externalId);
 
   async function handleAddBookmark() {
+    // create new bookmark row in table
+    // update zustand stores on success
     try {
+      const newBookmark = {
+        externalId,
+        title,
+        mediaType,
+        adult,
+        posterPath,
+        releaseDate,
+      };
+
       const response = (await addBookmarkFetch(
-        mediaId,
-        mediaType
+        newBookmark
       )) as BookmarkFetchRes;
 
-      addBookmarkIdToStore(response.bookmarkId);
+      // Update stores
+      addBookmark(response.bookmark);
     } catch (error) {
       handleNotAuthorized(error, navigate);
     }
   }
 
   async function handleRemoveBookmark() {
+    // remove bookmark row in table
+    // update zustand stores on success
     try {
-      const response = (await removeBookmarkFetch(mediaId)) as BookmarkFetchRes;
+      const response = (await removeBookmarkFetch(externalId)) as {
+        message: string;
+        removedBookmarkId: number;
+      };
 
-      removeBookmarkIdFromStore(response.bookmarkId);
+      removeBookmark(response.removedBookmarkId);
     } catch (error) {
       handleNotAuthorized(error, navigate);
     }
@@ -49,7 +63,9 @@ export default function TrendingContentCard({
   return (
     <div
       className={`${styles.container}`}
-      style={{ backgroundImage: `url(${imgUrl})` }}
+      style={{
+        backgroundImage: `url(https://image.tmdb.org/t/p/w780${posterPath})`,
+      }}
     >
       <button className={styles.hoverPlayBackdrop}>
         <div className={styles.playbutton}>
@@ -79,7 +95,7 @@ export default function TrendingContentCard({
       </button>
       <div className={styles.cardTextGroup}>
         <div className={styles.contentMetadataGroup}>
-          <span>{year}</span>
+          <span>{releaseDate.slice(0, 4)}</span>
           <span>&bull;</span>
           <span className={styles.mediaType}>
             {mediaType === "movie" ? (
@@ -104,7 +120,7 @@ export default function TrendingContentCard({
             {mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
-          <span>{advisoryRating}</span>
+          <span>{adult ? "18+" : "PG"}</span>
         </div>
         <p className={styles.contentTitle}>{title}</p>
       </div>
@@ -115,8 +131,8 @@ export default function TrendingContentCard({
 export interface ContentCardProps {
   title: string;
   mediaType: "movie" | "tv";
-  imgUrl: string;
-  year: string;
-  advisoryRating: string;
-  mediaId: number;
+  posterPath: string;
+  releaseDate: string;
+  adult: boolean;
+  externalId: number;
 }

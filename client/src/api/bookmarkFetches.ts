@@ -1,19 +1,17 @@
+import type { Bookmark } from "../stores/useBookmarksStore";
 import { apiFetchWrapper } from "./fetchWrapper";
 
-export const getAllBookmarksFetch = async () => {
+export const fetchAllBookmarks = async () => {
   return apiFetchWrapper("/bookmark", {
     method: "GET",
     credentials: "include",
   });
 };
 
-export const addBookmarkFetch = async (
-  mediaId: number,
-  mediaType: "movie" | "tv"
-) => {
+export const addBookmarkFetch = async (newBookmark: Bookmark) => {
   return apiFetchWrapper("/bookmark/add", {
     method: "POST",
-    body: JSON.stringify({ mediaId, mediaType }),
+    body: JSON.stringify({ newBookmark }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -21,8 +19,8 @@ export const addBookmarkFetch = async (
   });
 };
 
-export const removeBookmarkFetch = async (mediaId: number) => {
-  return apiFetchWrapper(`/bookmark/remove/${mediaId}`, {
+export const removeBookmarkFetch = async (externalId: number) => {
+  return apiFetchWrapper(`/bookmark/remove/${externalId}`, {
     method: "DELETE",
     credentials: "include",
   });
