@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface Bookmark {
+export interface BookmarkType {
   externalId: number;
   title: string;
   mediaType: "movie" | "tv";
@@ -12,10 +12,10 @@ export interface Bookmark {
 
 interface BookmarkStore {
   // Store states / setters
-  bookmarks: Bookmark[];
+  bookmarks: BookmarkType[];
   bookmarkIds: number[];
-  setBookmarks: (bookmarks: Bookmark[]) => void;
-  addBookmark: (newBookmark: Bookmark) => void;
+  setBookmarks: (bookmarks: BookmarkType[]) => void;
+  addBookmark: (newBookmark: BookmarkType) => void;
   removeBookmark: (bookmarkId: number) => void;
   resetBookmarksStore: () => void;
 }

@@ -62,15 +62,7 @@ export default function Movies({ title }: { title: string }) {
       <div className={styles.grid}>
         {movieData &&
           movieData.map((content, index) => (
-            <RegularContentCard
-              key={index}
-              title={content.title}
-              posterPath={content.posterPath}
-              releaseDate={content.releaseDate}
-              mediaType={content.mediaType}
-              adult={content.adult}
-              externalId={content.externalId}
-            />
+            <RegularContentCard key={index} content={content} />
           ))}
       </div>
     </div>

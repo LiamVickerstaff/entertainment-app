@@ -81,15 +81,7 @@ export default function Home() {
         <div className={styles.carousel}>
           {trendingData &&
             trendingData.map((content, index) => (
-              <TrendingContentCard
-                key={index}
-                title={content.title}
-                posterPath={content.posterPath}
-                releaseDate={content.releaseDate}
-                mediaType={content.mediaType}
-                adult={content.adult}
-                externalId={content.externalId}
-              />
+              <TrendingContentCard key={index} content={content} />
             ))}
         </div>
       </div>
@@ -98,15 +90,7 @@ export default function Home() {
         <div className={styles.recommendedGrid}>
           {recommendedData &&
             recommendedData.map((content, index) => (
-              <RegularContentCard
-                key={index}
-                title={content.title}
-                posterPath={content.posterPath}
-                releaseDate={content.releaseDate}
-                mediaType={content.mediaType}
-                adult={content.adult}
-                externalId={content.externalId}
-              />
+              <RegularContentCard key={index} content={content} />
             ))}
         </div>
       </div>

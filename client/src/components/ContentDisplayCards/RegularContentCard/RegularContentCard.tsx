@@ -1,74 +1,21 @@
 import styles from "./RegularContentCard.module.css";
-import type { ContentCardProps } from "../TrendingContentCard/TrendingContentCard";
-import {
-  addBookmarkFetch,
-  removeBookmarkFetch,
-} from "../../../api/bookmarkFetches";
-import { useNavigate } from "react-router-dom";
-import { handleNotAuthorized } from "../../../utils/authUtils";
-import {
-  useBookmarksStore,
-  type Bookmark,
-} from "../../../stores/useBookmarksStore";
+import { useBookmark } from "../../../hooks/useBookmark";
+import type { MediaData } from "../../../types/mediaDataTypes";
 
 export default function RegularContentCard({
-  title,
-  posterPath,
-  releaseDate,
-  mediaType,
-  adult,
-  externalId,
-}: ContentCardProps) {
-  const { bookmarkIds, addBookmark, removeBookmark } = useBookmarksStore();
-  const navigate = useNavigate();
-
-  const isBookmarked = bookmarkIds.includes(externalId);
-
-  async function handleAddBookmark() {
-    // create new bookmark row in table
-    // update zustand stores on success
-    try {
-      const newBookmark = {
-        externalId,
-        title,
-        mediaType,
-        adult,
-        posterPath,
-        releaseDate,
-      };
-
-      const response = (await addBookmarkFetch(
-        newBookmark
-      )) as BookmarkFetchRes;
-
-      // Update stores
-      addBookmark(response.bookmark);
-    } catch (error) {
-      handleNotAuthorized(error, navigate);
-    }
-  }
-
-  async function handleRemoveBookmark() {
-    // remove bookmark row in table
-    // update zustand stores on success
-    try {
-      const response = (await removeBookmarkFetch(externalId)) as {
-        message: string;
-        removedBookmarkId: number;
-      };
-
-      removeBookmark(response.removedBookmarkId);
-    } catch (error) {
-      handleNotAuthorized(error, navigate);
-    }
-  }
+  content,
+}: {
+  content: MediaData;
+}) {
+  const { isBookmarked, handleAddBookmark, handleRemoveBookmark } =
+    useBookmark(content);
 
   return (
     <div className={styles.container}>
       <div
         className={`${styles.contentImageDisplay}`}
         style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/w780${posterPath})`,
+          backgroundImage: `url(https://image.tmdb.org/t/p/w780${content.posterPath})`,
         }}
       >
         <button className={styles.hoverPlayBackdrop}>
@@ -100,11 +47,11 @@ export default function RegularContentCard({
       </div>
       <div className={styles.contentInfoSection}>
         <div className={styles.contentMetadataGroup}>
-          <span>{releaseDate.slice(0, 4)}</span>
+          <span>{content.releaseDate.slice(0, 4)}</span>
           <span>&bull;</span>
 
           <span className={styles.mediaType}>
-            {mediaType === "movie" ? (
+            {content.mediaType === "movie" ? (
               // TV SVG
               <svg viewBox="0 0 10 10">
                 <path
@@ -123,18 +70,13 @@ export default function RegularContentCard({
                 />
               </svg>
             )}
-            {mediaType === "movie" ? "Movie" : "TV Series"}
+            {content.mediaType === "movie" ? "Movie" : "TV Series"}
           </span>
           <span>&bull;</span>
-          <span>{adult ? "18+" : "PG"}</span>
+          <span>{content.adult ? "18+" : "PG"}</span>
         </div>
-        <p className={styles.contentTitle}>{title}</p>
+        <p className={styles.contentTitle}>{content.title}</p>
       </div>
     </div>
   );
-}
-
-export interface BookmarkFetchRes {
-  message: string;
-  bookmark: Bookmark;
 }

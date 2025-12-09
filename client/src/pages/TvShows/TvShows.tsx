@@ -63,15 +63,7 @@ export default function TvShows({ title }: { title: string }) {
       <div className={styles.grid}>
         {tvShowData &&
           tvShowData.map((content, index) => (
-            <RegularContentCard
-              key={index}
-              title={content.title}
-              posterPath={content.posterPath}
-              releaseDate={content.releaseDate}
-              mediaType={content.mediaType}
-              adult={content.adult}
-              externalId={content.externalId}
-            />
+            <RegularContentCard key={index} content={content} />
           ))}
       </div>
     </div>
