@@ -2,42 +2,31 @@ import styles from "./TvShows.module.css";
 import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 
 import { useEffect, useState } from "react";
-import { fetchTrendingTvShows } from "../../api/tmdbFetches";
-import type { MediaData } from "../../types/mediaDataTypes";
+import type { MediaContentType } from "../../types/mediaDataTypes";
 import { useLocation } from "react-router-dom";
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
-import { normalizeContentData } from "../../utils/tmbdUtils";
+import { useLoadContent } from "../../hooks/useLoadContent";
 
 export default function TvShows({ title }: { title: string }) {
   const location = useLocation();
-  const { bookmarks } = useBookmarksStore();
+  const { tvBookmarks } = useBookmarksStore();
+  const { loadContent, error, loading } = useLoadContent();
 
-  const [tvShowData, setTvShowData] = useState<MediaData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [tvShowData, setTvShowData] = useState<MediaContentType[]>([]);
 
+  // For Initial load of movie data
   useEffect(() => {
-    async function loadTvShows() {
-      try {
-        const isOnBookmarksPage = location.pathname === "/bookmarks";
-        if (isOnBookmarksPage) {
-          setTvShowData(bookmarks.filter((b) => b.mediaType === "tv"));
-        } else {
-          const responseData = await fetchTrendingTvShows();
-          setTvShowData(normalizeContentData(responseData));
-        }
-      } catch (err) {
-        const errorMessage =
-          (err as Error).message ||
-          "Whoops! We can't find any movies right now";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
+    console.log("calling loadConent hook in tv page");
+    loadContent("tv", setTvShowData);
+  }, []);
 
-    loadTvShows();
-  }, [bookmarks, location]);
+  // Reloads data if on bookmarks page and removing tvBookmarks
+  useEffect(() => {
+    if (location.pathname === "/bookmarks") {
+      console.log("calling tv loadConent only if on bookmarks page");
+      loadContent("tv", setTvShowData);
+    }
+  }, [tvBookmarks, location.pathname]);
 
   if (loading)
     return (

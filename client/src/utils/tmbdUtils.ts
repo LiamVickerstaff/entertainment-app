@@ -1,6 +1,8 @@
-import type { MediaData, MixedMediaType } from "../types/mediaDataTypes";
+import type { MediaContentType, MixedMediaType } from "../types/mediaDataTypes";
 
-export function normalizeContentData(mediaList: MixedMediaType[]): MediaData[] {
+export function normalizeContentData(
+  mediaList: MixedMediaType[]
+): MediaContentType[] {
   return mediaList.map((media) => {
     const title = "title" in media ? media.title : media.name;
     const releaseDate =

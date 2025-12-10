@@ -22,7 +22,7 @@ export default function UserModal({
 
       logoutUser(); // Remove zustand user-details-storage
       handleCloseModal(); // unmount UserModal component
-      navigate("/login"); // navigate user to login page
+      navigate("/login");
     } catch (error) {
       console.error("Failed to logout:", error);
     }

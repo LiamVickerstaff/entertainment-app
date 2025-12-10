@@ -1,11 +1,11 @@
 import styles from "./RegularContentCard.module.css";
 import { useBookmark } from "../../../hooks/useBookmark";
-import type { MediaData } from "../../../types/mediaDataTypes";
+import type { MediaContentType } from "../../../types/mediaDataTypes";
 
 export default function RegularContentCard({
   content,
 }: {
-  content: MediaData;
+  content: MediaContentType;
 }) {
   const { isBookmarked, handleAddBookmark, handleRemoveBookmark } =
     useBookmark(content);
@@ -30,7 +30,11 @@ export default function RegularContentCard({
           className={`${styles.bookmarkBtn} ${
             isBookmarked ? styles.isBookmarked : ""
           }`}
-          onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
+          onClick={
+            isBookmarked
+              ? () => handleRemoveBookmark(content.mediaType)
+              : handleAddBookmark
+          }
         >
           <svg
             viewBox="0 0 12 14"

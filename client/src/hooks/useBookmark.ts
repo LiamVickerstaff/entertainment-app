@@ -1,19 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import {
-  useBookmarksStore,
-  type BookmarkType,
-} from "../stores/useBookmarksStore";
+import { useBookmarksStore } from "../stores/useBookmarksStore";
 import { addBookmarkFetch, removeBookmarkFetch } from "../api/bookmarkFetches";
 import { handleNotAuthorized } from "../utils/authUtils";
-
-interface UseBookmarkProps {
-  externalId: number;
-  title: string;
-  mediaType: "movie" | "tv";
-  adult: boolean;
-  posterPath: string;
-  releaseDate: string;
-}
+import type { MediaContentType } from "../types/mediaDataTypes";
 
 export function useBookmark({
   externalId,
@@ -22,7 +11,7 @@ export function useBookmark({
   adult,
   posterPath,
   releaseDate,
-}: UseBookmarkProps) {
+}: MediaContentType) {
   const { bookmarkIds, addBookmark, removeBookmark } = useBookmarksStore();
   const navigate = useNavigate();
 
@@ -41,24 +30,27 @@ export function useBookmark({
 
       const response = (await addBookmarkFetch(newBookmark)) as {
         message: string;
-        bookmark: BookmarkType;
+        bookmark: MediaContentType;
       };
 
       // Update stores
       addBookmark(response.bookmark);
+      console.log("added bookmark");
     } catch (error) {
       handleNotAuthorized(error, navigate);
     }
   };
 
-  const handleRemoveBookmark = async () => {
+  const handleRemoveBookmark = async (mediaType: "movie" | "tv") => {
+    console.log(mediaType);
+    console.log("trying to remove bookmark from hook");
     try {
       const response = (await removeBookmarkFetch(externalId)) as {
         message: string;
         removedBookmarkId: number;
       };
 
-      removeBookmark(response.removedBookmarkId);
+      removeBookmark(response.removedBookmarkId, mediaType);
     } catch (error) {
       handleNotAuthorized(error, navigate);
     }
