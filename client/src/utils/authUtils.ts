@@ -35,3 +35,10 @@ export function handleNotAuthorized(
     navigate("/signup", { state: { fromAuth: true } });
   }
 }
+
+export function getCookie(cookieName: string) {
+  return document.cookie
+    .split("; ")
+    .find((item) => item.startsWith(cookieName + "="))
+    ?.split("=")[1];
+}

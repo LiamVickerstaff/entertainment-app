@@ -16,7 +16,8 @@ export default function Home() {
   useEffect(() => {
     loadContent("trending", setTrendingData);
     loadContent("recommended", setRecommendedData);
-  }, [loadContent]);
+  }, []);
+  
 
   if (loading)
     return (
