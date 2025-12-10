@@ -1,7 +1,9 @@
 import express, { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
-import { attachAuthCookie, hashPassword } from "../utils/authUtils";
+import { hashPassword, attachJWTAndCSRFCookies } from "../utils/authUtils";
 import bcrypt from "bcrypt";
+import { checkJWTAndCSRF } from "../middleware/authentication";
+import { redisClient } from "..";
 
 const router = express.Router();
 
@@ -43,8 +45,10 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!passwordsMatch)
       return res.status(401).json({ error: "Incorrect credentials" });
 
-    // Attach new cookie to response
-    attachAuthCookie(res, { userId: userAccount.id });
+    // Attach new cookies to response
+    await attachJWTAndCSRFCookies(res, userAccount.id);
+
+    console.log("/login res.cookie:", res.getHeader("Set-Cookie"));
 
     return res.status(200).json({
       message: "Successful login",
@@ -87,8 +91,8 @@ router.post("/signup", async (req: Request, res: Response) => {
       },
     });
 
-    // Attach new cookie to response
-    attachAuthCookie(res, { userId: newUser.id });
+    // Attach new cookies to response
+    attachJWTAndCSRFCookies(res, newUser.id);
 
     res.status(201).json({
       message: "User created successfully",
@@ -103,16 +107,34 @@ router.post("/signup", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/logout", (req: Request, res: Response) => {
-  // Timeout existing auth cookie so that client will remove it and end session
-  res.cookie("auth_token", "", {
+router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
+  const userId = req.userId;
+  // Timeout existing cookies so that client will remove them and end session
+
+  try {
+    await redisClient.del(`${userId}-csrf-session`);
+  } catch (error) {
+    console.log("Redis DEL error:", error);
+    return res.status(500).json({ error: "Failed to logout correctly" });
+  }
+
+  res.cookie("jwt_token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
     expires: new Date(0), // cookie will expire immediately, hence closing session
   });
 
-  res.status(200).json({ message: "You have been logged out" });
+  res.cookie("csrf_token", "", {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
+    expires: new Date(0),
+  });
+
+  return res.status(200).json({ message: "You have been logged out" });
 });
 
 export default router;

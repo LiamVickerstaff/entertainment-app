@@ -1,4 +1,5 @@
 import type { MediaContentType } from "../types/mediaDataTypes";
+import { getCookie } from "../utils/authUtils";
 import { apiFetchWrapper } from "./fetchWrapper";
 
 export const fetchAllBookmarks = async () => {
@@ -9,19 +10,28 @@ export const fetchAllBookmarks = async () => {
 };
 
 export const addBookmarkFetch = async (newBookmark: MediaContentType) => {
+  const csrfToken = getCookie("csrf_token");
+
   return apiFetchWrapper("/bookmark/add", {
     method: "POST",
-    body: JSON.stringify({ newBookmark }),
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      "X-CSRF-Token": csrfToken ?? "",
     },
-    credentials: "include",
+    body: JSON.stringify({ newBookmark }),
   });
 };
 
 export const removeBookmarkFetch = async (externalId: number) => {
+  const csrfToken = getCookie("csrf_token");
+
   return apiFetchWrapper(`/bookmark/remove/${externalId}`, {
     method: "DELETE",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": csrfToken ?? "",
+    },
   });
 };
