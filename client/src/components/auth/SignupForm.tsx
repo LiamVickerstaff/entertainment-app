@@ -1,92 +1,13 @@
-import { useState } from "react";
 import styles from "./auth.module.css";
-import { validateEmail, validateForm } from "../../utils/authUtils";
-import { attemptSignUp } from "../../api/authFetches";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../stores/useUserStore";
-import { useBookmarksStore } from "../../stores/useBookmarksStore";
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function SignupForm() {
-  const { loginUser } = useUserStore();
-  const { setBookmarks } = useBookmarksStore();
-  const navigate = useNavigate();
   const location = useLocation();
   const redirectedFromAuth = location.state?.fromAuth === true;
 
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-    repeatPassword: "",
-  });
-  const [formErrors, setFormErrors] = useState({
-    email: "",
-    password: "",
-    repeatPassword: "",
-    authError: "",
-  });
-
-  const [hasSubmit, setHasSubmit] = useState<boolean>(false);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-
-    setFormErrors((prev) => {
-      let error = "";
-      if (name === "email") {
-        if (!value) error = "Can't be empty";
-        else if (!validateEmail(value)) error = "Invalid email";
-      }
-
-      if (name === "password") {
-        if (!value) error = "Can't be empty";
-      }
-
-      if (name === "repeatedPassword") {
-        if (!value) error = "Can't be empty";
-        else if (value !== formValues.password) error = "Passwords don't match";
-      }
-
-      return { ...prev, [name]: error };
-    });
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    console.log(formErrors);
-    setHasSubmit(true);
-
-    const errors = validateForm(formValues);
-    setFormErrors((prev) => ({ ...prev, ...errors }));
-
-    const hasErrors = Object.values(errors).some(Boolean);
-    if (hasErrors) return;
-
-    try {
-      const response = (await attemptSignUp(
-        formValues.email,
-        formValues.password
-      )) as SignupFetchRes;
-      console.log("New user successfully created");
-      loginUser(response.user);
-      setBookmarks([]);
-      navigate("/");
-    } catch (error: unknown) {
-      let errorMessage = "Signup failed";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      console.error("SignUp failed: ", error);
-      setFormErrors((prev) => ({
-        ...prev,
-        authError: errorMessage,
-      }));
-    }
-  }
+  const { formValues, formErrors, hasSubmit, handleChange, handleSubmit } =
+    useAuth();
 
   return (
     <div className={styles.authFormContainer}>
@@ -97,7 +18,11 @@ export default function SignupForm() {
           <p>Create your account today!</p>
         </div>
       )}
-      <form method="POST" onSubmit={handleSubmit} noValidate>
+      <form
+        method="POST"
+        onSubmit={(e) => handleSubmit(e, "signup")}
+        noValidate
+      >
         <h2 className={styles.formTitle}>Sign Up</h2>
         <div className={styles.formFieldsGroup}>
           <div
@@ -175,12 +100,4 @@ export default function SignupForm() {
       </form>
     </div>
   );
-}
-
-export interface SignupFetchRes {
-  message: string;
-  user: {
-    username: string;
-    email: string;
-  };
 }

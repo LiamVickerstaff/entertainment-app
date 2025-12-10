@@ -1,53 +1,69 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export interface BookmarkType {
-  externalId: number;
-  title: string;
-  mediaType: "movie" | "tv";
-  adult: boolean;
-  posterPath: string;
-  releaseDate: string;
-}
+import type { MediaContentType } from "../types/mediaDataTypes";
 
 interface BookmarkStore {
   // Store states / setters
-  bookmarks: BookmarkType[];
+  movieBookmarks: MediaContentType[];
+  tvBookmarks: MediaContentType[];
   bookmarkIds: number[];
-  setBookmarks: (bookmarks: BookmarkType[]) => void;
-  addBookmark: (newBookmark: BookmarkType) => void;
-  removeBookmark: (bookmarkId: number) => void;
+  setBookmarks: (bookmarks: MediaContentType[]) => void;
+  addBookmark: (newBookmark: MediaContentType) => void;
+  removeBookmark: (bookmarkId: number, mediaType: "movie" | "tv") => void;
   resetBookmarksStore: () => void;
 }
 
 export const useBookmarksStore = create<BookmarkStore>()(
   persist(
     (set, get) => ({
-      bookmarks: [],
+      movieBookmarks: [],
+      tvBookmarks: [],
       bookmarkIds: [],
 
       setBookmarks: (bookmarks) => {
         const bookmarkIds = bookmarks.map((b) => b.externalId);
-        set({ bookmarks, bookmarkIds: bookmarkIds });
+        const movieBookmarks = bookmarks.filter((b) => b.mediaType === "movie");
+        const tvBookmarks = bookmarks.filter((b) => b.mediaType === "tv");
+
+        set({ movieBookmarks, tvBookmarks, bookmarkIds: bookmarkIds });
       },
 
       addBookmark: (newBookmark) => {
-        set({
-          bookmarks: [...get().bookmarks, newBookmark],
-          bookmarkIds: [...get().bookmarkIds, newBookmark.externalId],
-        });
+        if (newBookmark.mediaType === "movie") {
+          set({
+            movieBookmarks: [...get().movieBookmarks, newBookmark],
+            bookmarkIds: [...get().bookmarkIds, newBookmark.externalId],
+          });
+        } else {
+          set({
+            tvBookmarks: [...get().tvBookmarks, newBookmark],
+            bookmarkIds: [...get().bookmarkIds, newBookmark.externalId],
+          });
+        }
       },
 
-      removeBookmark: (bookmarkId) => {
-        set({
-          bookmarks: get().bookmarks.filter((b) => b.externalId !== bookmarkId),
-          bookmarkIds: get().bookmarkIds.filter((id) => id !== bookmarkId),
-        });
+      removeBookmark: (bookmarkId, mediaType) => {
+        if (mediaType === "movie") {
+          set({
+            movieBookmarks: get().movieBookmarks.filter(
+              (b) => b.externalId !== bookmarkId
+            ),
+            bookmarkIds: get().bookmarkIds.filter((id) => id !== bookmarkId),
+          });
+        } else {
+          set({
+            tvBookmarks: get().tvBookmarks.filter(
+              (b) => b.externalId !== bookmarkId
+            ),
+            bookmarkIds: get().bookmarkIds.filter((id) => id !== bookmarkId),
+          });
+        }
       },
 
       resetBookmarksStore: () => {
         set({
-          bookmarks: [],
+          movieBookmarks: [],
+          tvBookmarks: [],
           bookmarkIds: [],
         });
       },

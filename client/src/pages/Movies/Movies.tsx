@@ -2,42 +2,31 @@ import styles from "./Movies.module.css";
 import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 
 import { useEffect, useState } from "react";
-import { fetchTrendingMovies } from "../../api/tmdbFetches";
-import { type MediaData } from "../../types/mediaDataTypes";
+import { type MediaContentType } from "../../types/mediaDataTypes";
 import { useLocation } from "react-router-dom";
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
-import { normalizeContentData } from "../../utils/tmbdUtils";
+import { useLoadContent } from "../../hooks/useLoadContent";
 
 export default function Movies({ title }: { title: string }) {
   const location = useLocation();
-  const { bookmarks } = useBookmarksStore();
+  const { movieBookmarks } = useBookmarksStore();
+  const { loadContent, error, loading } = useLoadContent();
 
-  const [movieData, setMovieData] = useState<MediaData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [movieData, setMovieData] = useState<MediaContentType[]>([]);
 
+  // For Initial load of movie data
   useEffect(() => {
-    async function loadMovies() {
-      try {
-        const isOnBookmarksPage = location.pathname === "/bookmarks";
-        if (isOnBookmarksPage) {
-          setMovieData(bookmarks.filter((b) => b.mediaType === "movie"));
-        } else {
-          const responseData = await fetchTrendingMovies();
-          setMovieData(normalizeContentData(responseData));
-        }
-      } catch (err) {
-        const errorMessage =
-          (err as Error).message ||
-          "Whoops! We can't find any movies right now";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
+    console.log("calling loadConent hook in movies page");
+    loadContent("movie", setMovieData);
+  }, []);
 
-    loadMovies();
-  }, [bookmarks, location]);
+  // Reloads data if on bookmarks page and removing movieBookmarks
+  useEffect(() => {
+    if (location.pathname === "/bookmarks") {
+      console.log("calling movies loadConent only if on bookmarks page");
+      loadContent("movie", setMovieData);
+    }
+  }, [movieBookmarks, location.pathname]);
 
   if (loading)
     return (

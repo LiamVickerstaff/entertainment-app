@@ -28,7 +28,7 @@ export interface TvDataType extends GenericMediaType {
 
 export type MixedMediaType = MovieDataType | TvDataType;
 
-export interface MediaData {
+export interface MediaContentType {
   externalId: number;
   title: string;
   posterPath: string;

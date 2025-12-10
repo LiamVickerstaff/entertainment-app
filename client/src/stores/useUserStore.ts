@@ -2,11 +2,16 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useBookmarksStore } from "./useBookmarksStore";
 
+interface userDetailsType {
+  username: string;
+  email: string;
+}
+
 interface UserStore {
   username: string;
   email: string;
 
-  loginUser: (userPaylod: { username: string; email: string }) => void;
+  loginUser: (userPaylod: userDetailsType) => void;
   logoutUser: () => void;
 }
 

@@ -1,62 +1,23 @@
+import styles from "./Home.module.css";
 import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 import TrendingContentCard from "../../components/ContentDisplayCards/TrendingContentCard/TrendingContentCard";
-import styles from "./Home.module.css";
-
 import { useEffect, useState } from "react";
-import {
-  fetchRecommendedMedia,
-  fetchTrendingMedia,
-} from "../../api/tmdbFetches";
-import type { MediaData } from "../../types/mediaDataTypes";
-import { normalizeContentData } from "../../utils/tmbdUtils";
+import type { MediaContentType } from "../../types/mediaDataTypes";
+import { useLoadContent } from "../../hooks/useLoadContent";
 
 export default function Home() {
-  const [trendingData, setTrendingData] = useState<MediaData[] | []>([]);
-  const [recommendedData, setRecommendedData] = useState<MediaData[] | []>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [trendingData, setTrendingData] = useState<MediaContentType[] | []>([]);
+  const [recommendedData, setRecommendedData] = useState<
+    MediaContentType[] | []
+  >([]);
+
+  const { loadContent, error, loading } = useLoadContent();
 
   useEffect(() => {
-    async function loadTrending() {
-      try {
-        const data = await fetchTrendingMedia();
-        console.log("recieved list");
-        const normalizedData = normalizeContentData(data);
-        setTrendingData(normalizedData);
-      } catch (err) {
-        const errorMessage =
-          (err as Error).message ||
-          "Whoops! We can't find any movies right now";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    async function loadRecommended() {
-      try {
-        const data = await fetchRecommendedMedia();
-        console.log("recieved list");
-        const normalizedData = normalizeContentData(data);
-        setRecommendedData(normalizedData);
-      } catch (err) {
-        const errorMessage =
-          (err as Error).message ||
-          "Whoops! We can't find any movies right now";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadTrending();
-    loadRecommended();
-  }, []);
-
-  useEffect(() => {
-    console.log("trending", trendingData);
-    console.log("recommend", recommendedData);
-  }, [trendingData, recommendedData]);
+    loadContent("trending", setTrendingData);
+    loadContent("recommended", setRecommendedData);
+  }, []); // not including loadContent dependency since each call re-creates the function so
+  // it thinks that should re-render infinetely
 
   if (loading)
     return (
