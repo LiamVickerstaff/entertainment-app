@@ -54,6 +54,9 @@ export default function Movies({ title }: { title: string }) {
             <RegularContentCard key={index} content={content} />
           ))}
       </div>
+      {location.pathname === "/bookmarks" && movieBookmarks.length === 0 && (
+        <p>No movie bookmarks! Go checkout your favourite movies</p>
+      )}
     </div>
   );
 }

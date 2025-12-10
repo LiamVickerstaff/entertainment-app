@@ -121,7 +121,7 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
   res.cookie("jwt_token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
     expires: new Date(0), // cookie will expire immediately, hence closing session
   });
@@ -129,7 +129,7 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
   res.cookie("csrf_token", "", {
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
     expires: new Date(0),
   });
