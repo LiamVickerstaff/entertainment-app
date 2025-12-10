@@ -16,8 +16,7 @@ export default function Home() {
   useEffect(() => {
     loadContent("trending", setTrendingData);
     loadContent("recommended", setRecommendedData);
-  }, []); // not including loadContent dependency since each call re-creates the function so
-  // it thinks that should re-render infinetely
+  }, [loadContent]);
 
   if (loading)
     return (
