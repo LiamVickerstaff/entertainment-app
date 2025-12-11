@@ -45,15 +45,17 @@ export default function DisplayContentGroup({
       </div>
       {location.pathname === "/bookmarks" && contentData.length === 0 && (
         <p className={styles.missingContentMessage}>
-          Looks like you don't any bookmarks! Go checkout them out{" "}
+          Looks like you don't any {title.toLowerCase()} ! Go checkout them out{" "}
           <Link to={"/"}>here</Link>
         </p>
       )}
-      {location.pathname !== "/bookmarks" && contentData.length === 0 && (
-        <p className={styles.missingContentMessage}>
-          We couldn't find anything for: "{searchQuery}"
-        </p>
-      )}
+      {location.pathname !== "/bookmarks" &&
+        contentData.length === 0 &&
+        searchQuery.length > 0 && (
+          <p className={styles.missingContentMessage}>
+            We couldn't find anything for: "{searchQuery}"
+          </p>
+        )}
     </div>
   );
 }
