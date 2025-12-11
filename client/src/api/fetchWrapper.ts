@@ -6,19 +6,14 @@ export async function apiFetchWrapper<T>(
 
   try {
     const res = await fetch(`${fetchBaseUrl}${endpoint}`, options);
+    const data = await res.json();
 
     if (!res.ok) {
-      let errorMessage = "Failed Request";
-      try {
-        const data = await res.json();
-        if (data?.error)
-          errorMessage = `Failed fetch at ${endpoint}: ${data.error}`;
-      } catch (error) {
-        console.error("error calling .json on response:", error);
-      }
-      throw new Error(errorMessage);
+      console.log(`Failed fetch at ${endpoint}: ${data.error}`);
+
+      throw new Error(data.error || "Failed Request");
     }
-    return res.json();
+    return data as T;
   } catch (error) {
     console.error(`API fetch error: `, error);
     throw error;

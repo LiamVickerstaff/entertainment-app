@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { attemptLogout } from "../../api/authFetches";
 import { useUserStore } from "../../stores/useUserStore";
 import styles from "./UserModal.module.css";
@@ -48,9 +48,15 @@ export default function UserModal({
         <p className={styles.modalUsername}>{username || "guest"}</p>
         <p className={styles.modalUsername}>{email || "guest email"}</p>
       </div>
-      <button onClick={handleLogout} className={styles.logoutBtn}>
-        Logout
-      </button>
+      {!username ? (
+        <Link to={"/login"} className={styles.logoutBtn}>
+          Login
+        </Link>
+      ) : (
+        <button onClick={handleLogout} className={styles.logoutBtn}>
+          Logout
+        </button>
+      )}
     </dialog>
   );
 }
