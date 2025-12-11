@@ -16,13 +16,9 @@ const PORT = process.env.PORT || 3000;
 
 // Redis Client
 export const redisClient = createClient({
-  username: process.env.redisUsername || "",
-  password: process.env.redisPassword || "",
-  socket: {
-    host: process.env.redisHost || "",
-    port: 19561,
-  },
+  url: process.env.REDIS_URL || "",
 });
+
 redisClient.on("error", (err) => console.log("Redis Client Error: ", err));
 await redisClient.connect();
 
