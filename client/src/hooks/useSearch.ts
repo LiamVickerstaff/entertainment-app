@@ -51,7 +51,6 @@ export const useSearch = (
               return;
             }
             const searchResult = await fetchRequest(searchQuery);
-            console.log("search result inside useSearch:", searchResult);
             setData(formatContentData(searchResult) as MediaContentType[]);
           } catch (error) {
             console.error(
@@ -66,8 +65,13 @@ export const useSearch = (
     } finally {
       setLoading(false);
     }
-    console.log("current data after search:", data);
-  }, [location.pathname, searchQuery, contentType, fetchRequest]);
+  }, [
+    location.pathname,
+    searchQuery,
+    contentType,
+    fetchRequest,
+    bookmarksState,
+  ]);
 
   return { data, loading, error };
 };

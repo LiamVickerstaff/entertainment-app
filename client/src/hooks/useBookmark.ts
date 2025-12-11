@@ -35,7 +35,6 @@ export function useBookmark({
 
       // Update stores
       addBookmark(response.bookmark);
-      console.log("added bookmark");
     } catch (error) {
       handleNotAuthorized(error, navigate);
     }

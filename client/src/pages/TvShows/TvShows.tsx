@@ -3,7 +3,6 @@ import RegularContentCard from "../../components/ContentDisplayCards/RegularCont
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
 import { fetchTvBySearch } from "../../api/tmdbFetches";
 import { useSearch } from "../../hooks/useSearch";
-import { useEffect } from "react";
 
 export default function TvShows({ title }: { title: string }) {
   const { tvBookmarks } = useBookmarksStore();
@@ -13,10 +12,6 @@ export default function TvShows({ title }: { title: string }) {
     loading,
     error,
   } = useSearch("tv", fetchTvBySearch, tvBookmarks);
-
-  useEffect(() => {
-    console.log("data inside tvShows component", tvShowData);
-  }, [tvShowData]);
 
   if (loading)
     return (

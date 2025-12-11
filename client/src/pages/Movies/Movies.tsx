@@ -3,7 +3,6 @@ import RegularContentCard from "../../components/ContentDisplayCards/RegularCont
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
 import { fetchMoviesBySearch } from "../../api/tmdbFetches";
 import { useSearch } from "../../hooks/useSearch";
-import { useEffect } from "react";
 
 export default function Movies({ title }: { title: string }) {
   const { movieBookmarks } = useBookmarksStore();
@@ -13,10 +12,6 @@ export default function Movies({ title }: { title: string }) {
     loading,
     error,
   } = useSearch("movie", fetchMoviesBySearch, movieBookmarks);
-
-  useEffect(() => {
-    console.log("loading state: ", loading);
-  }, [movieData, loading]);
 
   if (loading)
     return (
