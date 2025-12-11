@@ -17,6 +17,13 @@ h2 {
   width: 100%;
 }
 
+.missingContentMessage {
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-weight: 500;
+  margin-block-start: 2rem;
+  text-align: center;
+}
+
 @media (min-width: 680px) {
   .displayCardsContainer {
     justify-content: start;
