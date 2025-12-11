@@ -4,20 +4,45 @@ import TrendingContentCard from "../../components/ContentDisplayCards/TrendingCo
 import { useEffect, useState } from "react";
 import type { MediaContentType } from "../../types/mediaDataTypes";
 import { useLoadContent } from "../../hooks/useLoadContent";
+import { useSearchParams } from "react-router-dom";
+import { fetchAllBySearch } from "../../api/tmdbFetches";
+import { formatContentData } from "../../utils/tmbdUtils";
 
 export default function Home() {
+  const [searchParams] = useSearchParams();
+  const { loadContent, error, loading } = useLoadContent();
+
   const [trendingData, setTrendingData] = useState<MediaContentType[] | []>([]);
+  const [searchData, setSearchData] = useState<MediaContentType[] | []>([]);
   const [recommendedData, setRecommendedData] = useState<
     MediaContentType[] | []
   >([]);
-
-  const { loadContent, error, loading } = useLoadContent();
 
   useEffect(() => {
     loadContent("trending", setTrendingData);
     loadContent("recommended", setRecommendedData);
   }, []);
-  
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("q");
+
+    (async () => {
+      if (!searchQuery) {
+        setSearchData([]);
+        return;
+      }
+
+      try {
+        const searchResult = await fetchAllBySearch(searchQuery);
+        setSearchData(formatContentData(searchResult));
+      } catch (error) {
+        console.error(
+          "Failed to fetch and set searchData by all search:",
+          error
+        );
+      }
+    })();
+  }, [searchParams]);
 
   if (loading)
     return (
@@ -34,6 +59,22 @@ export default function Home() {
         </p>
       </div>
     );
+
+  if (searchData && searchData.length > 0) {
+    return (
+      <div className={styles.homeContainer}>
+        <div className={styles.recommendedContainer}>
+          <h2>Search Results</h2>
+          <div className={styles.recommendedGrid}>
+            {searchData &&
+              searchData.map((content, index) => (
+                <RegularContentCard key={index} content={content} />
+              ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.homeContainer}>

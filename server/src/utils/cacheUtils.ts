@@ -52,7 +52,7 @@ export const cacheThenApiFetch = async (
     try {
       await redisClient.set(CACHE_KEY, JSON.stringify(data), { EX: ttl });
     } catch (redisErr) {
-      console.log(`Redis SET error for ${CACHE_KEY}:`, redisErr);
+      console.error(`Redis SET error for ${CACHE_KEY}:`, redisErr);
     }
 
     // Return fresh JSON data

@@ -48,8 +48,6 @@ router.post("/login", async (req: Request, res: Response) => {
     // Attach new cookies to response
     await attachJWTAndCSRFCookies(res, userAccount.id);
 
-    console.log("/login res.cookie:", res.getHeader("Set-Cookie"));
-
     return res.status(200).json({
       message: "Successful login",
       user: {
@@ -114,14 +112,14 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
   try {
     await redisClient.del(`${userId}-csrf-session`);
   } catch (error) {
-    console.log("Redis DEL error:", error);
+    console.error("Redis DEL error:", error);
     return res.status(500).json({ error: "Failed to logout correctly" });
   }
 
   res.cookie("jwt_token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
     expires: new Date(0), // cookie will expire immediately, hence closing session
   });
@@ -129,7 +127,7 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
   res.cookie("csrf_token", "", {
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
     expires: new Date(0),
   });

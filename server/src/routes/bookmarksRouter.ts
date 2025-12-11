@@ -19,10 +19,6 @@ router.post("/add", async (req: Request, res: Response) => {
       .json({ error: "No userId passed to /bookmark/add route" });
   }
 
-  console.log(
-    `user: ${userId} tried add bookmark for content: ${bookmarkToAdd}`
-  );
-
   bookmarkToAdd = { ...bookmarkToAdd, userId };
 
   let newBookmark;

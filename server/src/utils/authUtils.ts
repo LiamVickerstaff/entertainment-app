@@ -34,7 +34,7 @@ export async function attachJWTAndCSRFCookies(res: Response, userId: string) {
     // must be true in production (over HTTPS) and false in development (over HTTP)
     secure: process.env.NODE_ENV === "production",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
   });
 
@@ -43,7 +43,7 @@ export async function attachJWTAndCSRFCookies(res: Response, userId: string) {
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     path: "/",
   });
 }

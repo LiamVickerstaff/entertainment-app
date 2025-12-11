@@ -43,3 +43,40 @@ export const fetchTrendingTvShows = async () => {
 
   return data;
 };
+
+export const fetchAllBySearch = async (searchQuery: string) => {
+  const data: MovieDataType[] = await apiFetchWrapper(
+    `/tmdb/all/search/${searchQuery}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return data;
+};
+
+export const fetchMoviesBySearch = async (searchQuery: string) => {
+  const data: MovieDataType[] = await apiFetchWrapper(
+    `/tmdb/movie/search/${searchQuery}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return data;
+};
+
+export const fetchTvBySearch = async (searchQuery: string) => {
+  console.log("calling fetchTvBySearch");
+  const data: MovieDataType[] = await apiFetchWrapper(
+    `/tmdb/tv/search/${searchQuery}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+
+  return data;
+};

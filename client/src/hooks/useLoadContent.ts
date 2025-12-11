@@ -6,7 +6,7 @@ import {
   fetchTrendingTvShows,
 } from "../api/tmdbFetches";
 import { useBookmarksStore } from "../stores/useBookmarksStore";
-import { normalizeContentData } from "../utils/tmbdUtils";
+import { formatContentData } from "../utils/tmbdUtils";
 import { useCallback, useState } from "react";
 import type { MediaContentType } from "../types/mediaDataTypes";
 
@@ -53,10 +53,10 @@ export function useLoadContent() {
             break;
         }
 
-        setter(normalizeContentData(responseData));
-      } catch (err) {
+        setter(formatContentData(responseData));
+      } catch (error) {
         setError(
-          (err as Error).message ||
+          (error as Error).message ||
             `Whoops! We can't find any ${contentType} content right now`
         );
       } finally {
