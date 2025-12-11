@@ -23,7 +23,7 @@ export async function attachJWTAndCSRFCookies(res: Response, userId: string) {
     await redisClient.set(`${userId}-csrf-session`, newCSRFToken, {
       EX: redisTTL,
     });
-    console.log("successfully saved csrf token to redis");
+    console.log("successfully saved csrf session to redis");
   } catch (error) {
     console.error(`Redis SET error for ${userId}-csrf-session`, error);
   }

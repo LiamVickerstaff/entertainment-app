@@ -89,8 +89,11 @@ router.post("/signup", async (req: Request, res: Response) => {
       },
     });
 
+    
+
     // Attach new cookies to response
-    attachJWTAndCSRFCookies(res, newUser.id);
+    await attachJWTAndCSRFCookies(res, newUser.id);
+
 
     res.status(201).json({
       message: "User created successfully",
