@@ -34,7 +34,7 @@ export default function TvShows({ title }: { title: string }) {
   return (
     <div className={styles.container}>
       <h2>{title}</h2>
-      <div className={styles.grid}>
+      <div className={styles.displayCardsContainer}>
         {tvShowData &&
           tvShowData.map((content, index) => (
             <RegularContentCard key={index} content={content} />

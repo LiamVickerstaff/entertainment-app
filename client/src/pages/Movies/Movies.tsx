@@ -33,7 +33,7 @@ export default function Movies({ title }: { title: string }) {
   return (
     <div className={styles.container}>
       <h2>{title}</h2>
-      <div className={styles.grid}>
+      <div className={styles.displayCardsContainer}>
         {movieData &&
           movieData.map((content, index) => (
             <RegularContentCard key={index} content={content} />

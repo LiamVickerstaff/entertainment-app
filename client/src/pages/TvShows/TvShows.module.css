@@ -9,37 +9,29 @@ h2 {
   margin-bottom: 2.4rem;
 }
 
-.grid {
-  width: 100%;
-  display: grid;
+.displayCardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
   gap: 1.5rem;
-  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
 }
 
-@media (min-width: 450px) {
-  .grid {
-    gap: 2rem;
-    grid-template-columns: repeat(3, 1fr);
+@media (min-width: 680px) {
+  .displayCardsContainer {
+    justify-content: start;
   }
 }
+
 @media (min-width: 768px) {
   .container {
     padding-inline: 2.3rem;
-  }
-
-  .grid {
-    gap: 2.5rem;
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1080px) {
   h2 {
     margin-bottom: 3.2rem;
-  }
-
-  .grid {
-    grid-template-columns: repeat(4, minmax(16.4rem, 1fr));
   }
 }
 
