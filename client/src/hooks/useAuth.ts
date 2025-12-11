@@ -105,9 +105,14 @@ export function useAuth() {
       navigate("/");
     } catch (error) {
       console.error("auth form error:", error);
+      let message = "Something went wrong";
+
+      if (error instanceof Error) {
+        message = error.message;
+      }
       setFormErrors((prev) => ({
         ...prev,
-        authError: error.message,
+        authError: message,
       }));
     }
   }
