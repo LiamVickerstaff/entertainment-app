@@ -1,8 +1,13 @@
+.container {
+  flex: 1;
+  min-width: 15rem;
+  max-width: 18rem;
+}
+
 .contentImageDisplay {
   width: 100%;
-  min-width: 16rem;
   height: fit-content;
-  aspect-ratio: 1/1;
+  aspect-ratio: 2/3;
   border-radius: 0.8rem;
   margin-block-end: 0.8rem;
 
@@ -156,9 +161,18 @@
 .contentTitle {
   font-size: 1.5rem;
   font-weight: 500;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (min-width: 768px) {
+  .container {
+    min-width: 15rem;
+    max-width: 20rem;
+  }
+
   .playbutton > svg {
     width: 2.5rem;
     height: 2.5rem;
@@ -174,5 +188,13 @@
   .contentMetadataGroup svg {
     width: 1.2rem;
     height: 1.2rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    flex: 1;
+    min-width: 18rem;
+    max-width: 22rem;
   }
 }

@@ -1,5 +1,4 @@
 import styles from "./Home.module.css";
-import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
 import TrendingContentCard from "../../components/ContentDisplayCards/TrendingContentCard/TrendingContentCard";
 import { useEffect, useState } from "react";
 import type { MediaContentType } from "../../types/mediaDataTypes";
@@ -7,6 +6,7 @@ import { useLoadContent } from "../../hooks/useLoadContent";
 import { useSearchParams } from "react-router-dom";
 import { fetchAllBySearch } from "../../api/tmdbFetches";
 import { formatContentData } from "../../utils/tmbdUtils";
+import DisplayContentGroup from "../../components/DisplayContentGroup/DisplayContentGroup";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -63,15 +63,12 @@ export default function Home() {
   if (searchData && searchData.length > 0) {
     return (
       <div className={styles.homeContainer}>
-        <div className={styles.recommendedContainer}>
-          <h2>Search Results</h2>
-          <div className={styles.recommendedGrid}>
-            {searchData &&
-              searchData.map((content, index) => (
-                <RegularContentCard key={index} content={content} />
-              ))}
-          </div>
-        </div>
+        <DisplayContentGroup
+          title={"Search Results"}
+          contentData={searchData}
+          loading={loading}
+          error={error}
+        />
       </div>
     );
   }
@@ -87,15 +84,12 @@ export default function Home() {
             ))}
         </div>
       </div>
-      <div className={styles.recommendedContainer}>
-        <h2>Recommended for you</h2>
-        <div className={styles.recommendedGrid}>
-          {recommendedData &&
-            recommendedData.map((content, index) => (
-              <RegularContentCard key={index} content={content} />
-            ))}
-        </div>
-      </div>
+      <DisplayContentGroup
+        title={"Recommended"}
+        contentData={recommendedData}
+        loading={loading}
+        error={error}
+      />
     </div>
   );
 }
