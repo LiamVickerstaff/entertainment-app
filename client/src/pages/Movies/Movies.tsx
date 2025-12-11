@@ -1,32 +1,22 @@
 import styles from "./Movies.module.css";
 import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
-
-import { useEffect, useState } from "react";
-import { type MediaContentType } from "../../types/mediaDataTypes";
-import { useLocation } from "react-router-dom";
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
-import { useLoadContent } from "../../hooks/useLoadContent";
+import { fetchMoviesBySearch } from "../../api/tmdbFetches";
+import { useSearch } from "../../hooks/useSearch";
+import { useEffect } from "react";
 
 export default function Movies({ title }: { title: string }) {
-  const location = useLocation();
   const { movieBookmarks } = useBookmarksStore();
-  const { loadContent, error, loading } = useLoadContent();
 
-  const [movieData, setMovieData] = useState<MediaContentType[]>([]);
+  const {
+    data: movieData,
+    loading,
+    error,
+  } = useSearch("movie", fetchMoviesBySearch, movieBookmarks);
 
-  // For Initial load of movie data
   useEffect(() => {
-    console.log("calling loadConent hook in movies page");
-    loadContent("movie", setMovieData);
-  }, []);
-
-  // Reloads data if on bookmarks page and removing movieBookmarks
-  useEffect(() => {
-    if (location.pathname === "/bookmarks") {
-      console.log("calling movies loadConent only if on bookmarks page");
-      loadContent("movie", setMovieData);
-    }
-  }, [movieBookmarks, location.pathname]);
+    console.log("loading state: ", loading);
+  }, [movieData, loading]);
 
   if (loading)
     return (

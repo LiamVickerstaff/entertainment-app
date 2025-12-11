@@ -1,32 +1,22 @@
 import styles from "./TvShows.module.css";
 import RegularContentCard from "../../components/ContentDisplayCards/RegularContentCard/RegularContentCard";
-
-import { useEffect, useState } from "react";
-import type { MediaContentType } from "../../types/mediaDataTypes";
-import { useLocation } from "react-router-dom";
 import { useBookmarksStore } from "../../stores/useBookmarksStore";
-import { useLoadContent } from "../../hooks/useLoadContent";
+import { fetchTvBySearch } from "../../api/tmdbFetches";
+import { useSearch } from "../../hooks/useSearch";
+import { useEffect } from "react";
 
 export default function TvShows({ title }: { title: string }) {
-  const location = useLocation();
   const { tvBookmarks } = useBookmarksStore();
-  const { loadContent, error, loading } = useLoadContent();
 
-  const [tvShowData, setTvShowData] = useState<MediaContentType[]>([]);
+  const {
+    data: tvShowData,
+    loading,
+    error,
+  } = useSearch("tv", fetchTvBySearch, tvBookmarks);
 
-  // For Initial load of movie data
   useEffect(() => {
-    console.log("calling loadConent hook in tv page");
-    loadContent("tv", setTvShowData);
-  }, []);
-
-  // Reloads data if on bookmarks page and removing tvBookmarks
-  useEffect(() => {
-    if (location.pathname === "/bookmarks") {
-      console.log("calling tv loadConent only if on bookmarks page");
-      loadContent("tv", setTvShowData);
-    }
-  }, [tvBookmarks, location.pathname]);
+    console.log("data inside tvShows component", tvShowData);
+  }, [tvShowData]);
 
   if (loading)
     return (

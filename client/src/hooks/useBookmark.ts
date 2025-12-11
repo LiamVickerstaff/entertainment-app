@@ -21,11 +21,11 @@ export function useBookmark({
     try {
       const newBookmark = {
         externalId,
-        title,
-        mediaType,
+        title: title || "N/A",
+        mediaType: mediaType || "movie",
         adult,
-        posterPath,
-        releaseDate,
+        posterPath: posterPath || "N/A",
+        releaseDate: releaseDate || "N/A",
       };
 
       const response = (await addBookmarkFetch(newBookmark)) as {
@@ -42,8 +42,6 @@ export function useBookmark({
   };
 
   const handleRemoveBookmark = async (mediaType: "movie" | "tv") => {
-    console.log(mediaType);
-    console.log("trying to remove bookmark from hook");
     try {
       const response = (await removeBookmarkFetch(externalId)) as {
         message: string;

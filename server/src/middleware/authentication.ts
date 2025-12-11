@@ -50,9 +50,6 @@ export async function checkJWTAndCSRF(
   // Get csrf token from request headers
   const csrfTokenFromHeader = req.headers["x-csrf-token"];
 
-  console.log("csrfTokenFromHeader:", csrfTokenFromHeader);
-  console.log("csrfTokenFromRedis:", csrfTokenFromRedis);
-
   // Check csrf tokens match
   if (!csrfTokenFromHeader || csrfTokenFromHeader !== csrfTokenFromRedis) {
     return res.status(403).json({ error: "Invalid CSRF token" });

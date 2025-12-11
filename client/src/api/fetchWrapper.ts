@@ -11,9 +11,10 @@ export async function apiFetchWrapper<T>(
       let errorMessage = "Failed Request";
       try {
         const data = await res.json();
-        if (data?.error) errorMessage = data.error;
+        if (data?.error)
+          errorMessage = `Failed fetch at ${endpoint}: ${data.error}`;
       } catch (error) {
-        console.log(error);
+        console.error("error calling .json on response:", error);
       }
       throw new Error(errorMessage);
     }
