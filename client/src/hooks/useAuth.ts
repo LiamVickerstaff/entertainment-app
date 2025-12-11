@@ -72,7 +72,8 @@ export function useAuth() {
 
     // run validation and add any errors if present to state
     const errors = validate();
-    setFormErrors((prev) => ({ ...prev, errors }));
+    console.log("post-validate():", errors);
+    setFormErrors((prev) => ({ ...prev, ...errors, authError: "" }));
 
     // if errors are present, don't allow form to submit
     if (Object.values(errors).some(Boolean)) return;
@@ -87,15 +88,15 @@ export function useAuth() {
         loginUser(response.user);
         setBookmarks(response.userBookmarks!);
         return;
+      } else {
+        const response = (await attemptSignUp(
+          formValues.email,
+          formValues.password
+        )) as AuthFetchRes;
+        console.log("New user successfully created");
+        loginUser(response.user);
+        setBookmarks([]);
       }
-
-      const response = (await attemptSignUp(
-        formValues.email,
-        formValues.password
-      )) as AuthFetchRes;
-      console.log("New user successfully created");
-      loginUser(response.user);
-      setBookmarks([]);
     }
 
     // send auth fetch to server and handle response errors
@@ -103,14 +104,10 @@ export function useAuth() {
       await runAuth();
       navigate("/");
     } catch (error) {
+      console.error("auth form error:", error);
       setFormErrors((prev) => ({
         ...prev,
-        authError:
-          error instanceof Error
-            ? error.message
-            : formType === "login"
-            ? "Login failed"
-            : "Signup failed",
+        authError: error.message,
       }));
     }
   }
