@@ -5,6 +5,7 @@ export const attemptLogin = (email: string, password: string) => {
   return apiFetchWrapper("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -15,6 +16,7 @@ export const attemptSignUp = (email: string, password: string) => {
   return apiFetchWrapper("/auth/signup", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
