@@ -37,6 +37,7 @@ export function handleNotAuthorized(
 }
 
 export function getCookie(cookieName: string) {
+  console.log("getCookie() found these cookies:", document.cookie.split("; "));
   return document.cookie
     .split("; ")
     .find((item) => item.startsWith(cookieName + "="))
