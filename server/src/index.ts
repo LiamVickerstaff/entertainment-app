@@ -23,8 +23,6 @@ redisClient.on("error", (err) => console.log("Redis Client Error: ", err));
 await redisClient.connect();
 
 // Middleware
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   cors({
     origin:
@@ -40,6 +38,8 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
   })
 );
+app.use(cookieParser());
+app.use(express.json());
 
 // Routers
 app.use("/auth", authenticationRouter);

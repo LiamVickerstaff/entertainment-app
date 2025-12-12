@@ -11,6 +11,10 @@ export const fetchAllBookmarks = async () => {
 
 export const addBookmarkFetch = async (newBookmark: MediaContentType) => {
   const csrfToken = getCookie("csrf_token");
+  console.log(
+    "csrfToken we are trying to send to /bookmark/add in headers:",
+    csrfToken
+  );
 
   return apiFetchWrapper("/bookmark/add", {
     method: "POST",
