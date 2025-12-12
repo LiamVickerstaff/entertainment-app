@@ -17,7 +17,7 @@ export const addBookmarkFetch = async (newBookmark: MediaContentType) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-Token": csrfToken ?? "",
+      "x-csrf-token": csrfToken ?? "",
     },
     body: JSON.stringify({ newBookmark }),
   });
@@ -31,7 +31,7 @@ export const removeBookmarkFetch = async (externalId: number) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-Token": csrfToken ?? "",
+      "x-csrf-token": csrfToken ?? "",
     },
   });
 };

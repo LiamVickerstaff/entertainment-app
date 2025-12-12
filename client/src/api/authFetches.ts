@@ -31,7 +31,7 @@ export const attemptLogout = () => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-Token": csrfToken ?? "",
+      "x-csrf-token": csrfToken ?? "",
     },
   });
 };
