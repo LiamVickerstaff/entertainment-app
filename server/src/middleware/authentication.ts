@@ -42,6 +42,7 @@ export async function checkJWTAndCSRF(
     csrfTokenFromRedis = await redisClient.get(
       `${payload.userId}-csrf-session`
     );
+    console.log("Retreived csrfTokenFromRedis:", csrfTokenFromRedis);
   } catch (error) {
     console.error(`Redis GET error:`, error);
     return res.status(500).json({ error: "Couldn't reach redis store" });
@@ -52,6 +53,9 @@ export async function checkJWTAndCSRF(
 
   // Check csrf tokens match
   if (!csrfTokenFromHeader || csrfTokenFromHeader !== csrfTokenFromRedis) {
+    console.log(
+      `browser csrf and redis csrf do not match: csrfTokenFromHeader: ${csrfTokenFromHeader}, csrfTokenFromRedis: ${csrfTokenFromRedis}`
+    );
     return res.status(403).json({ error: "Invalid CSRF token" });
   }
 
