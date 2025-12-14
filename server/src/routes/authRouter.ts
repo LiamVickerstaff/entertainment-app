@@ -8,6 +8,7 @@ import { redisClient } from "..";
 const router = express.Router();
 
 router.post("/login", async (req: Request, res: Response) => {
+  console.log("accessing the login route");
   // Retrieve email and password from request + verify
   const { email, password } = req.body;
   if (!email || !password)
@@ -89,11 +90,8 @@ router.post("/signup", async (req: Request, res: Response) => {
       },
     });
 
-    
-
     // Attach new cookies to response
     await attachJWTAndCSRFCookies(res, newUser.id);
-
 
     res.status(201).json({
       message: "User created successfully",
