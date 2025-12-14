@@ -63,7 +63,7 @@ export const fetchMoviesBySearch = async (searchQuery: string) => {
 };
 
 export const fetchTvBySearch = async (searchQuery: string) => {
-  console.log("calling fetchTvBySearch");
+  // console.log("calling fetchTvBySearch");
   const data: MovieDataType[] = await apiFetchWrapper(
     `/tmdb/tv/search/${searchQuery}`,
     {

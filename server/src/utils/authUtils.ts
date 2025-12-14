@@ -11,22 +11,12 @@ export async function hashPassword(password: string) {
 }
 
 export async function attachJWTAndCSRFCookies(res: Response, userId: string) {
+  console.log("attempting to attach the jwt and csrf cookie tokens");
   const newJWTToken = jwt.sign({ userId }, process.env.JWT_SECRET!, {
     expiresIn: "1d",
   });
 
-  const newCSRFToken = crypto.randomBytes(32).toString("hex"); // ask about this
-  const redisTTL = 60 * 60 * 24; // 1 day
-
-  // store the csrf session in redis
-  try {
-    await redisClient.set(`${userId}-csrf-session`, newCSRFToken, {
-      EX: redisTTL,
-    });
-    console.log("successfully saved csrf session to redis");
-  } catch (error) {
-    console.error(`Redis SET error for ${userId}-csrf-session`, error);
-  }
+  const newCSRFToken = crypto.randomBytes(64).toString("hex");
 
   // attach jwt cookie
   res.cookie("jwt_token", newJWTToken, {

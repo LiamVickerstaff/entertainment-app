@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { redisClient } from "..";
 
 export async function checkJWTAndCSRF(
   req: Request,
@@ -10,6 +9,9 @@ export async function checkJWTAndCSRF(
   console.log("Checking JWT and CSRF");
   // Get the auth token from cookie
   const jwtToken = req.cookies.jwt_token;
+  const csrfCookieToken = req.cookies.csrf_token;
+  console.log("jwtToken from browser request cookies:", jwtToken);
+  console.log("csrfToken from browser request cookies:", csrfCookieToken);
 
   // Check token is there, therefore authorized or not
   if (!jwtToken) {
@@ -24,6 +26,8 @@ export async function checkJWTAndCSRF(
       jwtToken,
       process.env.JWT_SECRET || ""
     ) as AuthTokenPayload;
+
+    console.log("payload after verifying jwt token:", payload);
   } catch (error) {
     console.error("jwt token failed verification:", error);
     return res.status(401).json({ error: "Not authenticated" });
@@ -36,28 +40,23 @@ export async function checkJWTAndCSRF(
   }
   req.userId = payload.userId;
 
-  // Get csrf token from redis session
-  let csrfTokenFromRedis;
-  try {
-    csrfTokenFromRedis = await redisClient.get(
-      `${payload.userId}-csrf-session`
-    );
-    console.log("Retreived csrfTokenFromRedis:", csrfTokenFromRedis);
-  } catch (error) {
-    console.error(`Redis GET error:`, error);
-    return res.status(500).json({ error: "Couldn't reach redis store" });
-  }
-
   // Get csrf token from request headers
   const csrfTokenFromHeader = req.headers["x-csrf-token"];
+  console.log("csrfToken from request header:", csrfTokenFromHeader);
 
   // Check csrf tokens match
-  if (!csrfTokenFromHeader || csrfTokenFromHeader !== csrfTokenFromRedis) {
+  if (
+    !csrfTokenFromHeader ||
+    !csrfCookieToken ||
+    csrfTokenFromHeader !== csrfCookieToken
+  ) {
     console.log(
-      `browser csrf and redis csrf do not match: csrfTokenFromHeader: ${csrfTokenFromHeader}, csrfTokenFromRedis: ${csrfTokenFromRedis}`
+      `browser header csrf and cookie csrf do not match: csrfTokenFromHeader: ${csrfTokenFromHeader}, csrfCookieToken: ${csrfCookieToken}`
     );
     return res.status(403).json({ error: "Invalid CSRF token" });
   }
+
+  console.log("After checking jwt and csrf, everything is good");
 
   next();
 }
