@@ -3,6 +3,7 @@ import { useBookmarksStore } from "../stores/useBookmarksStore";
 import { addBookmarkFetch, removeBookmarkFetch } from "../api/bookmarkFetches";
 import { handleNotAuthorized } from "../utils/authUtils";
 import type { MediaContentType } from "../types/mediaDataTypes";
+import { useAuthStore } from "../stores/useAuthStore";
 
 export function useBookmark({
   externalId,
@@ -13,6 +14,7 @@ export function useBookmark({
   releaseDate,
 }: MediaContentType) {
   const { bookmarkIds, addBookmark, removeBookmark } = useBookmarksStore();
+  const { sessionCSRFToken } = useAuthStore();
   const navigate = useNavigate();
 
   const isBookmarked = bookmarkIds.includes(externalId);
@@ -28,7 +30,10 @@ export function useBookmark({
         releaseDate: releaseDate || "N/A",
       };
 
-      const response = (await addBookmarkFetch(newBookmark)) as {
+      const response = (await addBookmarkFetch(
+        newBookmark,
+        sessionCSRFToken
+      )) as {
         message: string;
         bookmark: MediaContentType;
       };
@@ -42,7 +47,10 @@ export function useBookmark({
 
   const handleRemoveBookmark = async (mediaType: "movie" | "tv") => {
     try {
-      const response = (await removeBookmarkFetch(externalId)) as {
+      const response = (await removeBookmarkFetch(
+        externalId,
+        sessionCSRFToken
+      )) as {
         message: string;
         removedBookmarkId: number;
       };

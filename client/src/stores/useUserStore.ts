@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useBookmarksStore } from "./useBookmarksStore";
+import { useAuthStore } from "./useAuthStore";
 
 interface userDetailsType {
   username: string;
@@ -41,6 +42,8 @@ export const useUserStore = create<UserStore>()(
         // Clear and delete bookmark storage from local storage
         useBookmarksStore.getState().resetBookmarksStore();
         useBookmarksStore.persist.clearStorage();
+
+        useAuthStore.getState().resetAuthStore();
       },
     }),
     { name: "user-details-storage" }

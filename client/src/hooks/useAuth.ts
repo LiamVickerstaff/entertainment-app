@@ -5,10 +5,12 @@ import { validateEmail, validateForm } from "../utils/authUtils";
 import { attemptLogin, attemptSignUp } from "../api/authFetches";
 import type { MediaContentType } from "../types/mediaDataTypes";
 import { useState } from "react";
+import { useAuthStore } from "../stores/useAuthStore";
 
 export function useAuth() {
   const { loginUser } = useUserStore();
   const { setBookmarks } = useBookmarksStore();
+  const { setCSRFToken } = useAuthStore();
   const navigate = useNavigate();
 
   const [formValues, setFormValues] = useState({
@@ -87,6 +89,7 @@ export function useAuth() {
         )) as AuthFetchRes;
         loginUser(response.user);
         setBookmarks(response.userBookmarks!);
+        setCSRFToken(response.newCSRFToken);
         return;
       } else {
         const response = (await attemptSignUp(
@@ -96,6 +99,7 @@ export function useAuth() {
         console.log("New user successfully created");
         loginUser(response.user);
         setBookmarks([]);
+        setCSRFToken(response.newCSRFToken);
       }
     }
 
@@ -133,4 +137,5 @@ export interface AuthFetchRes {
     email: string;
   };
   userBookmarks?: MediaContentType[];
+  newCSRFToken: string;
 }

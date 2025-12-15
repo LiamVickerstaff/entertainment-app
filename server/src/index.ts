@@ -23,6 +23,8 @@ redisClient.on("error", (err) => console.log("Redis Client Error: ", err));
 await redisClient.connect();
 
 // Middleware
+app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin:
@@ -34,21 +36,14 @@ app.use(
             "http://172.20.10.9:5173", //  iPhone Personal Hotspot url
           ],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
   })
 );
-app.use(cookieParser());
-app.use(express.json());
 
 // Routers
 app.use("/auth", authenticationRouter);
 app.use("/tmdb", tmdbRouter);
 app.use("/bookmark", checkJWTAndCSRF, bookmarkRouter);
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
-});
 
 // Run App
 app.listen(PORT, () => {

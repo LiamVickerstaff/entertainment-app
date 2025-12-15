@@ -1,9 +1,16 @@
 import express, { type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
-import { hashPassword, attachJWTAndCSRFCookies } from "../utils/authUtils";
+import {
+  hashPassword,
+  attachJWTCookie,
+  setCSRFSessionToken,
+  verifyJWTCookie,
+} from "../utils/authUtils";
 import bcrypt from "bcrypt";
 import { checkJWTAndCSRF } from "../middleware/authentication";
 import { redisClient } from "..";
+import jwt from "jsonwebtoken";
+import { AuthTokenPayload } from "../types/authTypes";
 
 const router = express.Router();
 
@@ -46,8 +53,19 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!passwordsMatch)
       return res.status(401).json({ error: "Incorrect credentials" });
 
-    // Attach new cookies to response
-    await attachJWTAndCSRFCookies(res, userAccount.id);
+    // Attach new jwt cookie to response
+    await attachJWTCookie(res, userAccount.id);
+
+    // Set new csrf session token in redis and get the token
+    let newCSRFToken: string;
+
+    try {
+      newCSRFToken = await setCSRFSessionToken(userAccount.id);
+    } catch (error) {
+      return res
+        .status(401)
+        .json({ message: "Issue connecting to redis", error });
+    }
 
     return res.status(200).json({
       message: "Successful login",
@@ -56,6 +74,7 @@ router.post("/login", async (req: Request, res: Response) => {
         email: userAccount.email,
       },
       userBookmarks: userAccount.bookmarks,
+      newCSRFToken,
     });
   } catch (error) {
     console.error("Error with user login: ", error);
@@ -90,8 +109,18 @@ router.post("/signup", async (req: Request, res: Response) => {
       },
     });
 
-    // Attach new cookies to response
-    await attachJWTAndCSRFCookies(res, newUser.id);
+    // Attach new jwt cookie to response and get new csrf session token
+    await attachJWTCookie(res, newUser.id);
+
+    let newCSRFToken: string;
+
+    try {
+      newCSRFToken = await setCSRFSessionToken(newUser.id);
+    } catch (error) {
+      return res
+        .status(401)
+        .json({ message: "Issue connecting to redis", error });
+    }
 
     res.status(201).json({
       message: "User created successfully",
@@ -99,6 +128,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         username: newUser.username,
         email: newUser.email,
       },
+      newCSRFToken,
     });
   } catch (error) {
     console.error("Signup error: ", error);
@@ -108,8 +138,8 @@ router.post("/signup", async (req: Request, res: Response) => {
 
 router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
   const userId = req.userId;
-  // Timeout existing cookies so that client will remove them and end session
 
+  // Delete CSRF session token in redis
   try {
     await redisClient.del(`${userId}-csrf-session`);
   } catch (error) {
@@ -117,6 +147,7 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Failed to logout correctly" });
   }
 
+  // Tell browser to expire the jwt token cookie
   res.cookie("jwt_token", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -125,15 +156,31 @@ router.post("/logout", checkJWTAndCSRF, async (req: Request, res: Response) => {
     expires: new Date(0), // cookie will expire immediately, hence closing session
   });
 
-  res.cookie("csrf_token", "", {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    path: "/",
-    expires: new Date(0),
-  });
-
   return res.status(200).json({ message: "You have been logged out" });
+});
+
+router.get("/fresh-csrf", async (req: Request, res: Response) => {
+  const jwtToken = req.cookies.jwt_token;
+
+  let userId: string;
+  let newCSRFToken: string;
+
+  try {
+    userId = await verifyJWTCookie(jwtToken);
+  } catch (error) {
+    return res.status(403).json({ message: "Not authenticated", error });
+  }
+
+  try {
+    newCSRFToken = await setCSRFSessionToken(userId);
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: "Issue connecting to redis", error });
+  }
+
+  return res.status(200).json({ newCSRFToken });
+  // return the new csrf token in json so client can update state
 });
 
 export default router;

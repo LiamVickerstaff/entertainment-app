@@ -79,27 +79,4 @@ router.delete("/remove/:mediaId", async (req: Request, res: Response) => {
   }
 });
 
-// Get all bookmarks of a user
-router.get("/", async (req: Request, res: Response) => {
-  const userId = req.userId;
-
-  if (!userId)
-    return res
-      .status(400)
-      .json({ error: "No userId found at /bookmark route" });
-
-  let bookmarks;
-
-  try {
-    bookmarks = await prisma.bookmark.findMany({ where: { userId } });
-  } catch (error) {
-    console.error("Couldn't get all bookmarks from database:", error);
-    return res
-      .status(400)
-      .json({ error: "No userId found at /bookmark route" });
-  }
-
-  return res.status(200).json({ bookmarks });
-});
-
 export default router;

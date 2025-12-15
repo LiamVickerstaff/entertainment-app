@@ -1,4 +1,3 @@
-import { getCookie } from "../utils/authUtils";
 import { apiFetchWrapper } from "./fetchWrapper";
 
 export const attemptLogin = (email: string, password: string) => {
@@ -23,15 +22,20 @@ export const attemptSignUp = (email: string, password: string) => {
   });
 };
 
-export const attemptLogout = () => {
-  const csrfToken = getCookie("csrf_token");
-
+export const attemptLogout = (sessionCSRFToken: string) => {
   return apiFetchWrapper("/auth/logout", {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "x-csrf-token": csrfToken ?? "",
+      "X-CSRF-token": sessionCSRFToken ?? "",
     },
+  });
+};
+
+export const getFreshCSRFToken = () => {
+  return apiFetchWrapper("/auth/fresh-csrf", {
+    method: "GET",
+    credentials: "include",
   });
 };
