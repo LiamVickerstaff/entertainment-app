@@ -9,8 +9,6 @@ import {
 import bcrypt from "bcrypt";
 import { checkJWTAndCSRF } from "../middleware/authentication";
 import { redisClient } from "..";
-import jwt from "jsonwebtoken";
-import { AuthTokenPayload } from "../types/authTypes";
 
 const router = express.Router();
 

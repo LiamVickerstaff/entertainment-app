@@ -9,15 +9,34 @@ import TvShows from "./pages/TvShows/TvShows";
 import Bookmarks from "./pages/Bookmarks/Bookmarks";
 import { useEffect } from "react";
 import { getFreshCSRFToken } from "./api/authFetches";
-import { getCookie } from "./utils/authUtils";
+import { useUserStore } from "./stores/useUserStore";
+import { useAuthStore } from "./stores/useAuthStore";
 
 function App() {
+  const { setCSRFToken } = useAuthStore();
+  const { isLoggedIn } = useUserStore();
   // On each page relaod, refresh the csrf token
   useEffect(() => {
     // Only ever refresh the csrf token when a user is already logged in
-    if (getCookie("jwt_token")) {
-      getFreshCSRFToken();
-    }
+    console.log("page reloaded");
+
+    const runCSRFRefresh = async () => {
+      if (isLoggedIn) {
+        console.log(
+          "Trying to refresh csrf token after page reload and user is logged in"
+        );
+        try {
+          const { newCSRFToken } = (await getFreshCSRFToken()) as {
+            newCSRFToken: string;
+          };
+          setCSRFToken(newCSRFToken);
+        } catch (error) {
+          console.log("error from getFreshCSRFToken", error);
+        }
+      }
+    };
+
+    runCSRFRefresh();
   }, []);
 
   return (

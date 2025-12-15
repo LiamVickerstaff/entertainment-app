@@ -11,6 +11,7 @@ interface userDetailsType {
 interface UserStore {
   username: string;
   email: string;
+  isLoggedIn: boolean;
 
   loginUser: (userPaylod: userDetailsType) => void;
   logoutUser: () => void;
@@ -21,11 +22,13 @@ export const useUserStore = create<UserStore>()(
     (set) => ({
       username: "",
       email: "",
+      isLoggedIn: false,
 
       loginUser: (userPaylod) => {
         set(() => ({
           username: userPaylod.username,
           email: userPaylod.email,
+          isLoggedIn: true,
         }));
       },
 
@@ -34,6 +37,7 @@ export const useUserStore = create<UserStore>()(
         set(() => ({
           username: "",
           email: "",
+          isLoggedIn: false,
         }));
 
         // delete user-details-storage from client local storage

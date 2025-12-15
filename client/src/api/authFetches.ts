@@ -34,6 +34,7 @@ export const attemptLogout = (sessionCSRFToken: string) => {
 };
 
 export const getFreshCSRFToken = () => {
+  console.log("getFreshCSRFToken was called");
   return apiFetchWrapper("/auth/fresh-csrf", {
     method: "GET",
     credentials: "include",
