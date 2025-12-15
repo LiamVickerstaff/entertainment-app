@@ -22,7 +22,6 @@ export const useSearch = (
     try {
       if (location.pathname === "/bookmarks") {
         (async () => {
-          console.log("calling callBookmarkSearch");
           try {
             if (!searchQuery) {
               setData(bookmarksState);
@@ -44,7 +43,6 @@ export const useSearch = (
         return;
       } else {
         (async () => {
-          console.log("calling callRegularSearch");
           try {
             if (!searchQuery) {
               loadContent(contentType, setData);
