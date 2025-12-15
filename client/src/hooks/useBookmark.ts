@@ -4,6 +4,7 @@ import { addBookmarkFetch, removeBookmarkFetch } from "../api/bookmarkFetches";
 import { handleNotAuthorized } from "../utils/authUtils";
 import type { MediaContentType } from "../types/mediaDataTypes";
 import { useAuthStore } from "../stores/useAuthStore";
+import { useUserStore } from "../stores/useUserStore";
 
 export function useBookmark({
   externalId,
@@ -14,12 +15,15 @@ export function useBookmark({
   releaseDate,
 }: MediaContentType) {
   const { bookmarkIds, addBookmark, removeBookmark } = useBookmarksStore();
+  const { isLoggedIn } = useUserStore();
   const { sessionCSRFToken } = useAuthStore();
   const navigate = useNavigate();
 
   const isBookmarked = bookmarkIds.includes(externalId);
 
   const handleAddBookmark = async () => {
+    if (!isLoggedIn) navigate("/login");
+
     try {
       const newBookmark = {
         externalId,

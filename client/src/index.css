@@ -37,12 +37,25 @@ body {
   width: 100%;
   min-height: 100%;
 
+  background-color: var(--clr-page-bg);
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+input,
+textarea,
+span {
   font-family: "Quicksand", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
   letter-spacing: 0px;
-
-  background-color: var(--clr-page-bg);
   color: var(--clr-white);
 }
 
@@ -54,6 +67,8 @@ button {
   font-optical-sizing: auto;
   font-style: normal;
   letter-spacing: 0px;
+  outline: none;
+  border: none;
 }
 
 img {
