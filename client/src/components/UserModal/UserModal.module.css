@@ -69,6 +69,8 @@
 .logoutBtn {
   padding-block: 0.4rem;
   padding-inline: 0.6rem;
+  color: var(--clr-white);
+  text-decoration: none;
 
   font-size: clamp(1.2rem, 3vw, 2.2rem);
 

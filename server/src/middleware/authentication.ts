@@ -1,7 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { redisClient } from "..";
-import { AuthTokenPayload } from "../types/authTypes";
 import { verifyJWTCookie } from "../utils/authUtils";
 
 export async function checkJWTAndCSRF(
@@ -13,6 +11,7 @@ export async function checkJWTAndCSRF(
   // Get the jwt and csrf tokens
   const jwtToken = req.cookies.jwt_token;
   const headerCSRFToken = req.headers["x-csrf-token"];
+  console.log("csrf token from request header:", headerCSRFToken);
 
   let userId: string;
 
@@ -39,6 +38,8 @@ export async function checkJWTAndCSRF(
     );
     return res.status(403).json({ error: "Invalid CSRF token" });
   }
+
+  req.userId = userId;
 
   next();
 }

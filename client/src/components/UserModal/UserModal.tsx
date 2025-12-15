@@ -11,7 +11,7 @@ export default function UserModal({
   dialogRef: React.RefObject<HTMLDialogElement | null>;
   handleCloseModal: () => void;
 }) {
-  const { username, email, logoutUser } = useUserStore();
+  const { username, email, isLoggedIn, logoutUser } = useUserStore();
   const { sessionCSRFToken } = useAuthStore();
   const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ export default function UserModal({
         <p className={styles.modalUsername}>{username || "guest"}</p>
         <p className={styles.modalUsername}>{email || "guest email"}</p>
       </div>
-      {!username ? (
+      {!isLoggedIn ? (
         <Link to={"/login"} className={styles.logoutBtn}>
           Login
         </Link>

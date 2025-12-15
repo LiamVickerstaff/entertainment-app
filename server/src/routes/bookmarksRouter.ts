@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/add", async (req: Request, res: Response) => {
   const userId = req.userId;
+  console.log("/bookmark/add route UserId: ", userId);
   let bookmarkToAdd = req.body.newBookmark;
 
   if (!bookmarkToAdd) {
