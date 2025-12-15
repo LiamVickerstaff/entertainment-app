@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { attemptLogout } from "../../api/authFetches";
 import { useUserStore } from "../../stores/useUserStore";
 import styles from "./UserModal.module.css";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 export default function UserModal({
   dialogRef,
@@ -11,13 +12,14 @@ export default function UserModal({
   handleCloseModal: () => void;
 }) {
   const { username, email, logoutUser } = useUserStore();
+  const { sessionCSRFToken } = useAuthStore();
   const navigate = useNavigate();
 
   async function handleLogout() {
     console.log("attempt logout");
 
     try {
-      await attemptLogout(); // tells server to expire the cookie, instructing the client
+      await attemptLogout(sessionCSRFToken); // tells server to expire the cookie, instructing the client
       // to delete it from storage
 
       logoutUser(); // Remove zustand user-details-storage

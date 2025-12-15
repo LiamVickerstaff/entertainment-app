@@ -7,8 +7,19 @@ import Home from "./pages/Home/Home";
 import Movies from "./pages/Movies/Movies";
 import TvShows from "./pages/TvShows/TvShows";
 import Bookmarks from "./pages/Bookmarks/Bookmarks";
+import { useEffect } from "react";
+import { getFreshCSRFToken } from "./api/authFetches";
+import { getCookie } from "./utils/authUtils";
 
 function App() {
+  // On each page relaod, refresh the csrf token
+  useEffect(() => {
+    // Only ever refresh the csrf token when a user is already logged in
+    if (getCookie("jwt_token")) {
+      getFreshCSRFToken();
+    }
+  }, []);
+
   return (
     <>
       <Routes>
